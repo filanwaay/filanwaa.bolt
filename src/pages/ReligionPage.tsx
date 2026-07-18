@@ -1,41 +1,49 @@
+import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../i18n/LanguageContext'
 import { SubscribeSection } from '../components/SubscribeSection'
 import { AdBanner } from '../components/AdBanner'
 
 export function ReligionPage() {
-  const { t } = useLanguage()
+ const { t, lang } = useLanguage()
+  const navigate = useNavigate()
 
   const pillars = [
-    {
-      title: t.religion.tawhid,
-      desc: t.religion.tawhidDesc,
-      icon: '🕌',
-      gradient: 'linear-gradient(135deg, #0F4C3A, #2E8B5C)',
-      image: 'https://images.pexels.com/photos/2845462/pexels-photo-2845462.jpeg?auto=compress&cs=tinysrgb&w=800',
-    },
-    {
-      title: t.religion.salah,
-      desc: t.religion.salahDesc,
-      icon: '🤲',
-      gradient: 'linear-gradient(135deg, #2E8B5C, #5FB088)',
-      image: 'https://images.pexels.com/photos/8122647/pexels-photo-8122647.jpeg?auto=compress&cs=tinysrgb&w=800',
-    },
-    {
-      title: t.religion.fasting,
-      desc: t.religion.fastingDesc,
-      icon: '🌙',
-      gradient: 'linear-gradient(135deg, #1A1F1C, #3E4642)',
-      image: 'https://images.pexels.com/photos/162359/pexels-photo-162359.jpeg?auto=compress&cs=tinysrgb&w=800',
-    },
-    {
-      title: t.religion.hajj,
-      desc: t.religion.hajjDesc,
-      icon: '🕋',
-      gradient: 'linear-gradient(135deg, #7C5817, #E8B14B)',
-      image: 'https://images.pexels.com/photos/4329890/pexels-photo-4329890.jpeg?auto=compress&cs=tinysrgb&w=800',
-    },
-  ]
-
+  {
+    title: t.religion.tawhid,
+    desc: t.religion.tawhidDesc,
+    icon: '🕌',
+    gradient: 'linear-gradient(135deg, #0F4C3A, #2E8B5C)',
+    image: 'https://images.pexels.com/photos/2845462/pexels-photo-2845462.jpeg?auto=compress&cs=tinysrgb&w=800',
+  },
+  {
+    title: t.religion.salah,
+    desc: t.religion.salahDesc,
+    icon: '🤲',
+    gradient: 'linear-gradient(135deg, #2E8B5C, #5FB088)',
+    image: 'https://images.pexels.com/photos/8122647/pexels-photo-8122647.jpeg?auto=compress&cs=tinysrgb&w=800',
+  },
+  {
+    title: t.religion.fasting,
+    desc: t.religion.fastingDesc,
+    icon: '🌙',
+    gradient: 'linear-gradient(135deg, #1A1F1C, #3E4642)',
+    image: 'https://images.pexels.com/photos/162359/pexels-photo-162359.jpeg?auto=compress&cs=tinysrgb&w=800',
+  },
+  {
+    title: lang === 'so' ? 'Zakada' : lang === 'ar' ? 'الزكاة' : 'Zakah',
+    desc: lang === 'so' ? 'Bixinta xoolaha loo baahan yahay masaakiinta iyo saboolka' : lang === 'ar' ? 'إعطاء المال للمحتاجين والفقراء' : 'Giving a fixed portion of wealth to those in need',
+    icon: '💰',
+    gradient: 'linear-gradient(135deg, #7C5817, #B8873A)',
+    image: 'https://images.pexels.com/photos/4386366/pexels-photo-4386366.jpeg?auto=compress&cs=tinysrgb&w=800',
+  },
+  {
+    title: t.religion.hajj,
+    desc: t.religion.hajjDesc,
+    icon: '🕋',
+    gradient: 'linear-gradient(135deg, #7C5817, #E8B14B)',
+    image: 'https://images.pexels.com/photos/4329890/pexels-photo-4329890.jpeg?auto=compress&cs=tinysrgb&w=800',
+  },
+]
   return (
     <div style={{ paddingTop: '72px' }}>
       {/* Hero */}
@@ -106,6 +114,15 @@ export function ReligionPage() {
                   e.currentTarget.style.boxShadow = '0 4px 12px rgba(15,76,58,0.08)'
                   e.currentTarget.style.transform = 'translateY(0)'
                 }}
+                
+                   onClick={() => {
+  if (i === 0) navigate('/diinta/towxiid')   // Card 1: Towxiid
+  if (i === 1) navigate('/diinta/salaadda')  // Card 2: Salaadda
+  if (i === 2) navigate('/diinta/soonka')     // Card 3: Soonka
+  if (i === 3) navigate('/diinta/zakada')       // Card 4: Zakada
+  if (i === 4) navigate('/diinta/xaj')          // Card 5: Xaj
+}}
+
               >
                 <div style={{
                   height: '320px',

@@ -1,9 +1,12 @@
 import { useLanguage } from '../i18n/LanguageContext'
 import { SubscribeSection } from '../components/SubscribeSection'
 import { AdBanner } from '../components/AdBanner'
+import { useNavigate } from 'react-router-dom'
+import { HtmlPage } from './pages/HtmlPage'
 
 export function TechnologyPage() {
   const { t } = useLanguage()
+  const navigate = useNavigate()
 
   const languages = [
     { title: t.tech.python, desc: t.tech.pythonDesc, icon: '🐍', color: '#3776AB', bg: '#E8F5F0' },
@@ -89,6 +92,16 @@ export function TechnologyPage() {
                   e.currentTarget.style.transform = 'translateY(0)'
                   e.currentTarget.style.boxShadow = '0 4px 12px rgba(15,76,58,0.06)'
                   e.currentTarget.style.borderColor = 'transparent'
+                }}
+                onClick={() => {
+                  if (i === 0) navigate('/python')
+                  if (i === 1) navigate('/html')
+                  if (i === 2) navigate('/css')
+                  if (i === 3) navigate('/php')
+                  if (i === 4) navigate('/r')
+                  if (i === 5) navigate('/java')
+                  if (i === 6) navigate('/cpp')
+                  if (i === 7) navigate('/sql')
                 }}
               >
                 <div style={{

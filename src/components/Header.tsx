@@ -26,6 +26,7 @@ export function Header() {
     { to: '/tecnolijiyada', label: t.nav.technology },
     { to: '/suugaanta', label: t.nav.culture },
     { to: '/quraanka', label: t.nav.quran },
+    { to: '/download', label: lang === 'so' ? 'Download' : lang === 'ar' ? 'تنزيل' : 'Download' },
     { to: '/nagu-baar', label: t.nav.about },
     { to: '/nala-soo-xiriir', label: t.nav.contact },
   ]

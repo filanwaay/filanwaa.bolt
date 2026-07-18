@@ -1,40 +1,56 @@
+import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../i18n/LanguageContext'
 import { SubscribeSection } from '../components/SubscribeSection'
 import { AdBanner } from '../components/AdBanner'
 
 export function CulturePage() {
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
+  const navigate = useNavigate()
 
-  const topics = [
-    {
-      title: t.culture.proverbs,
-      desc: t.culture.proverbsDesc,
-      icon: '💬',
-      gradient: 'linear-gradient(135deg, #7C5817, #E8B14B)',
-      image: 'https://images.pexels.com/photos/2034335/pexels-photo-2034335.jpeg?auto=compress&cs=tinysrgb&w=800',
-    },
-    {
-      title: t.culture.wisdom,
-      desc: t.culture.wisdomDesc,
-      icon: '🧠',
-      gradient: 'linear-gradient(135deg, #0F4C3A, #2E8B5C)',
-      image: 'https://images.pexels.com/photos/1025469/pexels-photo-1025469.jpeg?auto=compress&cs=tinysrgb&w=800',
-    },
-    {
-      title: t.culture.poetry,
-      desc: t.culture.poetryDesc,
-      icon: '📜',
-      gradient: 'linear-gradient(135deg, #3E4642, #6B7872)',
-      image: 'https://images.pexels.com/photos/1762821/pexels-photo-1762821.jpeg?auto=compress&cs=tinysrgb&w=800',
-    },
-    {
-      title: t.culture.songs,
-      desc: t.culture.songsDesc,
-      icon: '🎵',
-      gradient: 'linear-gradient(135deg, #A8781F, #E8B14B)',
-      image: 'https://images.pexels.com/photos/4754019/pexels-photo-4754019.jpeg?auto=compress&cs=tinysrgb&w=800',
-    },
-  ]
+ const topics = [
+  {
+    title: t.culture.proverbs,
+    desc: t.culture.proverbsDesc,
+    icon: '💬',
+    gradient: 'linear-gradient(135deg, #7C5817, #E8B14B)',
+    image: 'https://images.pexels.com/photos/2034335/pexels-photo-2034335.jpeg?auto=compress&cs=tinysrgb&w=800',
+  },
+  {
+    title: t.culture.wisdom,
+    desc: t.culture.wisdomDesc,
+    icon: '🧠',
+    gradient: 'linear-gradient(135deg, #0F4C3A, #2E8B5C)',
+    image: 'https://images.pexels.com/photos/1025469/pexels-photo-1025469.jpeg?auto=compress&cs=tinysrgb&w=800',
+  },
+  {
+    title: t.culture.poetry,
+    desc: t.culture.poetryDesc,
+    icon: '📜',
+    gradient: 'linear-gradient(135deg, #3E4642, #6B7872)',
+    image: 'https://images.pexels.com/photos/1762821/pexels-photo-1762821.jpeg?auto=compress&cs=tinysrgb&w=800',
+  },
+  {
+    title: t.culture.songs,
+    desc: t.culture.songsDesc,
+    icon: '🎵',
+    gradient: 'linear-gradient(135deg, #A8781F, #E8B14B)',
+    image: 'https://images.pexels.com/photos/4754019/pexels-photo-4754019.jpeg?auto=compress&cs=tinysrgb&w=800',
+  },
+  {
+    title: lang === 'so' ? 'Sheekooyinka' : lang === 'ar' ? 'القصص' : 'Stories',
+    desc: lang === 'so' ? 'Sheekooyin dhab ah oo taaban, oo ka hadlaya nolosha iyo badalka.' : lang === 'ar' ? 'قصص واقعية مؤثرة تتحدث عن الحياة والتغيير.' : 'Real, moving stories about life and transformation.',
+    icon: '📖',
+    gradient: 'linear-gradient(135deg, #3E4642, #1A1D1B)',
+    image: 'https://images.pexels.com/photos/1907785/pexels-photo-1907785.jpeg?auto=compress&cs=tinysrgb&w=800',
+  },
+  {
+    title: lang === 'so' ? 'Baro Dalkaada' : lang === 'ar' ? 'تعرف على بلدك' : 'Learn Your Country',
+    desc: lang === 'so' ? 'Gobollada Soomaaliya iyo degmooyinka ka tirsan — aqoonso dhulkaaga.' : lang === 'ar' ? 'مناطق الصومال ومقاطعاتها.' : "Somalia's regions and their districts.",
+    icon: '🇸🇴',
+    gradient: 'linear-gradient(135deg, #0F4C3A, #7C5817)',
+    image: 'https://images.pexels.com/photos/2265876/pexels-photo-2265876.jpeg?auto=compress&cs=tinysrgb&w=800',
+  },
+]
 
   return (
     <div style={{ paddingTop: '72px' }}>
@@ -98,6 +114,7 @@ export function CulturePage() {
                   boxShadow: '0 4px 12px rgba(15,76,58,0.08)',
                   transition: 'all 0.4s',
                   animation: `fadeInUp 0.6s ease-out ${i * 0.1}s both`,
+                  cursor: (i === 0 || i === 1) ? 'pointer' : 'default',
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-8px)'
@@ -106,6 +123,13 @@ export function CulturePage() {
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'translateY(0)'
                   e.currentTarget.style.boxShadow = '0 4px 12px rgba(15,76,58,0.08)'
+                }}
+                onClick={() => {
+                   if (i === 0) navigate('/maahmaah')
+                   if (i === 1) navigate('/xikmad')
+                   if (i === 3) navigate('/heeso')
+                   if (i === 4) navigate('/sheeko')
+                   if (i === 5) navigate('/baro-dalkaaga')
                 }}
               >
                 <div style={{

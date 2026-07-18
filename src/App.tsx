@@ -11,7 +11,25 @@ import { AboutPage } from './pages/AboutPage'
 import { ContactPage } from './pages/ContactPage'
 import { TermsPage } from './pages/TermsPage'
 import { PrivacyPage } from './pages/PrivacyPage'
-
+import { WisdomPage } from './pages/WisdomPage'
+import { ProverbsPage } from './pages/ProverbsPage'
+import { StoryPage } from './pages/StoryPage'
+import { SongsPage } from './pages/SongsPage'
+import { PythonPage } from './pages/PythonPage'
+import { HtmlPage } from './pages/HtmlPage'
+import { CssPage } from './pages/CssPage'
+import { PhpPage } from './pages/PhpPage'
+import { RPage } from './pages/RPage'
+import { JavaPage } from './pages/JavaPage'
+import { CppPage } from './pages/CppPage'
+import { SqlPage } from './pages/SqlPage'
+import { TowxiidPage } from './pages/TowxiidPage'
+import { SalaahPage } from './pages/SalaahPage'
+import { SawmPage } from './pages/SawmPage'
+import { ZakahPage } from './pages/ZakahPage'
+import { HajjPage } from './pages/HajjPage'
+import { DownloadPage } from './pages/DownloadPage'
+import { CountryPage } from './pages/CountryPage'
 function App() {
   return (
     <LanguageProvider>
@@ -29,6 +47,25 @@ function App() {
               <Route path="/nala-soo-xiriir" element={<ContactPage />} />
               <Route path="/shuruudaha" element={<TermsPage />} />
               <Route path="/siraha" element={<PrivacyPage />} />
+              <Route path="/xikmad" element={<WisdomPage />} />
+              <Route path="/maahmaah" element={<ProverbsPage />} />
+             <Route path="/sheeko" element={<StoryPage />} />
+             <Route path="/heeso" element={<SongsPage />} />
+             <Route path="/python" element={<PythonPage />} />
+             <Route path="/html" element={<HtmlPage />} />
+             <Route path="/css" element={<CssPage />} />
+             <Route path="/php" element={<PhpPage />} />
+             <Route path="/r" element={<RPage />} />
+             <Route path="/java" element={<JavaPage />} />
+             <Route path="/cpp" element={<CppPage />} />
+             <Route path="/sql" element={<SqlPage />} />
+             <Route path="/diinta/towxiid" element={<TowxiidPage />} />
+             <Route path="/diinta/salaadda" element={<SalaahPage />} />
+             <Route path="/diinta/soonka" element={<SawmPage />} />
+             <Route path="/diinta/zakada" element={<ZakahPage />} />
+             <Route path="/diinta/xaj" element={<HajjPage />} />
+             <Route path="/download" element={<DownloadPage />} />
+             <Route path="/baro-dalkaaga" element={<CountryPage />} />
             </Routes>
           </main>
           <Footer />
