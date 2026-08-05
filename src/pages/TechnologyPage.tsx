@@ -1,27 +1,25 @@
+import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../i18n/LanguageContext'
 import { SubscribeSection } from '../components/SubscribeSection'
 import { AdBanner } from '../components/AdBanner'
-import { useNavigate } from 'react-router-dom'
-import { HtmlPage } from './pages/HtmlPage'
 
 export function TechnologyPage() {
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
   const navigate = useNavigate()
 
   const languages = [
-    { title: t.tech.python, desc: t.tech.pythonDesc, icon: '🐍', color: '#3776AB', bg: '#E8F5F0' },
-    { title: t.tech.html, desc: t.tech.htmlDesc, icon: '🌐', color: '#E34F26', bg: '#FEF6E6' },
-    { title: t.tech.css, desc: t.tech.cssDesc, icon: '🎨', color: '#1572B6', bg: '#E8F5F0' },
-    { title: t.tech.php, desc: t.tech.phpDesc, icon: '🐘', color: '#777BB4', bg: '#EEF2F0' },
-    { title: t.tech.r, desc: t.tech.rDesc, icon: '📊', color: '#276DC3', bg: '#E8F5F0' },
-    { title: t.tech.java, desc: t.tech.javaDesc, icon: '☕', color: '#ED8B00', bg: '#FEF6E6' },
-    { title: t.tech.cpp, desc: t.tech.cppDesc, icon: '⚙️', color: '#00599C', bg: '#E8F5F0' },
-    { title: t.tech.sql, desc: t.tech.sqlDesc, icon: '🗄️', color: '#4479A1', bg: '#EEF2F0' },
+    { title: 'Python', desc: lang === 'so' ? 'Luqadda ugu fudud ee la bilaabo' : lang === 'ar' ? 'أسهل لغة للبدء بها' : 'The easiest language to start with', icon: '🐍', color: '#3776AB', bg: '#E8F5F0' },
+    { title: 'HTML', desc: lang === 'so' ? 'Qaab-dhismeedka websaydhyada' : lang === 'ar' ? 'هيكل المواقع الإلكترونية' : 'The structure of websites', icon: '🌐', color: '#E34F26', bg: '#FEF6E6' },
+    { title: 'CSS', desc: lang === 'so' ? 'Naqshadaynta websaydhyada' : lang === 'ar' ? 'تصميم المواقع الإلكترونية' : 'Styling websites', icon: '🎨', color: '#1572B6', bg: '#E8F5F0' },
+    { title: 'PHP', desc: lang === 'so' ? 'Backend-ka websaydhyada' : lang === 'ar' ? 'خلفية المواقع الإلكترونية' : 'Website backends', icon: '🐘', color: '#777BB4', bg: '#EEF2F0' },
+    { title: 'R', desc: lang === 'so' ? 'Falanqaynta xogta iyo istaatistigga' : lang === 'ar' ? 'تحليل البيانات والإحصاء' : 'Data analysis and statistics', icon: '📊', color: '#276DC3', bg: '#E8F5F0' },
+    { title: 'Java', desc: lang === 'so' ? 'Barnaamij-sameynta Android' : lang === 'ar' ? 'برمجة تطبيقات Android' : 'Android programming', icon: '☕', color: '#ED8B00', bg: '#FEF6E6' },
+    { title: 'C++', desc: lang === 'so' ? 'Barnaamij-sameynta xawaaraga sare' : lang === 'ar' ? 'البرمجة عالية الأداء' : 'High-performance programming', icon: '⚙️', color: '#00599C', bg: '#E8F5F0' },
+    { title: 'SQL', desc: lang === 'so' ? 'Database-yada iyo xogta maareynta' : lang === 'ar' ? 'قواعد البيانات وإدارة البيانات' : 'Databases and data management', icon: '🗄️', color: '#4479A1', bg: '#EEF2F0' },
   ]
 
   return (
     <div style={{ paddingTop: '72px' }}>
-      {/* Hero */}
       <section style={{
         padding: '80px 0',
         background: 'linear-gradient(135deg, #1A1F1C 0%, #051F18 100%)',
@@ -47,7 +45,7 @@ export function TechnologyPage() {
             marginBottom: '16px',
             lineHeight: 1.2,
           }}>
-            {t.tech.title}
+            {t.techTitle}
           </h1>
           <p style={{
             color: 'rgba(255,255,255,0.8)',
@@ -56,12 +54,11 @@ export function TechnologyPage() {
             margin: '0 auto',
             lineHeight: 1.6,
           }}>
-            {t.tech.subtitle}
+            {t.techDesc}
           </p>
         </div>
       </section>
 
-      {/* Languages Grid */}
       <section className="section" style={{ background: '#F8FAF9' }}>
         <div className="container">
           <div style={{
@@ -71,7 +68,7 @@ export function TechnologyPage() {
           }}
             className="tech-grid"
           >
-            {languages.map((lang, i) => (
+            {languages.map((item, i) => (
               <div
                 key={i}
                 style={{
@@ -82,11 +79,12 @@ export function TechnologyPage() {
                   transition: 'all 0.4s',
                   border: '1px solid transparent',
                   animation: `fadeInUp 0.5s ease-out ${i * 0.08}s both`,
+                  cursor: 'pointer',
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-8px)'
                   e.currentTarget.style.boxShadow = '0 24px 64px rgba(15,76,58,0.16)'
-                  e.currentTarget.style.borderColor = lang.color
+                  e.currentTarget.style.borderColor = item.color
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'translateY(0)'
@@ -108,29 +106,29 @@ export function TechnologyPage() {
                   width: '64px',
                   height: '64px',
                   borderRadius: '16px',
-                  background: lang.bg,
+                  background: item.bg,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: '2rem',
                   marginBottom: '20px',
                 }}>
-                  {lang.icon}
+                  {item.icon}
                 </div>
                 <h3 style={{
                   fontSize: '1.3rem',
                   fontWeight: 700,
-                  color: lang.color,
+                  color: item.color,
                   marginBottom: '12px',
                 }}>
-                  {lang.title}
+                  {item.title}
                 </h3>
                 <p style={{
                   color: '#525C57',
                   fontSize: '0.9rem',
                   lineHeight: 1.6,
                 }}>
-                  {lang.desc}
+                  {item.desc}
                 </p>
               </div>
             ))}

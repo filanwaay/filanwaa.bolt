@@ -1,0 +1,47 @@
+:root {
+  --deep: #0B3D2E;
+  --deepDark: #06251C;
+  --gold: #D4A537;
+  --goldLight: #E8C468;
+  --terracotta: #C1652F;
+  --sand: #F5EDE0;
+  --ink: #12211B;
+  --slate: #4A554E;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--sand);
+  color: var(--ink);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.section {
+  padding: 60px 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  line-height: 1.2;
+}

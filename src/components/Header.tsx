@@ -1,226 +1,149 @@
-import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useLanguage } from '../i18n/LanguageContext'
-import { LANGUAGES, Language } from '../i18n/translations'
+
+const COLORS = {
+  deep: '#0B3D2E', deepDark: '#06251C', gold: '#D4A537',
+  goldLight: '#E8C468', sand: '#F5EDE0',
+}
 
 export function Header() {
   const { lang, setLang, t } = useLanguage()
-  const [scrolled, setScrolled] = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const [langOpen, setLangOpen] = useState(false)
-  const location = useLocation()
+  const [menuOpen, setMenuOpen] = useState(false)
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', onScroll)
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  useEffect(() => {
-    setMobileOpen(false)
-  }, [location.pathname])
-
-  const navLinks = [
-    { to: '/', label: t.nav.home },
-    { to: '/diinta', label: t.nav.religion },
-    { to: '/tecnolijiyada', label: t.nav.technology },
-    { to: '/suugaanta', label: t.nav.culture },
-    { to: '/quraanka', label: t.nav.quran },
-    { to: '/download', label: lang === 'so' ? 'Download' : lang === 'ar' ? 'تنزيل' : 'Download' },
-    { to: '/nagu-baar', label: t.nav.about },
-    { to: '/nala-soo-xiriir', label: t.nav.contact },
+  const menuItems = [
+    { key: 'menuHome', path: '/' },
+    { key: 'menuReligion', path: '/diinta' },
+    { key: 'menuTechnology', path: '/tecnolijiyada' },
+    { key: 'menuCulture', path: '/suugaanta' },
+    { key: 'menuQuran', path: '/quraanka' },
+    { key: 'menuDownload', path: '/download' },
+    { key: 'menuFreeSites', path: '/free-sites' },
+    { key: 'menuAbout', path: '/nagu-baar' },
+    { key: 'menuContact', path: '/nala-soo-xiriir' },
   ]
 
+  const getLabel = (key: keyof typeof t) => (t[key] as string) || key
+
   return (
-    <header style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      zIndex: 1000,
-      background: scrolled ? 'rgba(15, 76, 58, 0.98)' : 'transparent',
-      backdropFilter: scrolled ? 'blur(12px)' : 'none',
-      transition: 'all 0.3s ease',
-      boxShadow: scrolled ? '0 2px 20px rgba(0,0,0,0.15)' : 'none',
-    }}>
-      <div className="container" style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        height: '72px',
+    <>
+      <header style={{
+        background: COLORS.deep,
+        borderBottom: `3px solid ${COLORS.gold}`,
+        boxShadow: '0 4px 16px rgba(0,0,0,0.35)',
+        position: 'sticky', top: 0, zIndex: 100,
       }}>
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'white' }}>
-          <div style={{
-            width: '44px',
-            height: '44px',
-            borderRadius: '12px',
-            background: 'linear-gradient(135deg, #E8B14B, #D49A2E)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontFamily: 'Amiri, serif',
-            fontSize: '26px',
-            fontWeight: 700,
-            color: '#0F4C3A',
-            boxShadow: '0 4px 12px rgba(232, 177, 75, 0.3)',
-          }}>
-            ف
-          </div>
-          <span style={{
-            fontSize: '1.5rem',
-            fontWeight: 700,
-            letterSpacing: '-0.02em',
-          }}>
-            Filanwaa
-          </span>
-        </Link>
-
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-          {navLinks.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              style={{
-                color: location.pathname === link.to ? '#E8B14B' : 'white',
-                fontSize: '0.82rem',
-                fontWeight: 500,
-                padding: '8px 10px',
-                borderRadius: '8px',
-                transition: 'all 0.2s',
-                background: location.pathname === link.to ? 'rgba(232, 177, 75, 0.1)' : 'transparent',
-                whiteSpace: 'nowrap',
-              }}
-              onMouseEnter={(e) => {
-                if (location.pathname !== link.to) {
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.1)'
-                  e.currentTarget.style.color = '#E8B14B'
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (location.pathname !== link.to) {
-                  e.currentTarget.style.background = 'transparent'
-                  e.currentTarget.style.color = 'white'
-                }
-              }}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{ position: 'relative' }}>
-            <button
-              onClick={() => setLangOpen(!langOpen)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                color: 'white',
-                padding: '8px 14px',
-                borderRadius: '8px',
-                background: 'rgba(255,255,255,0.1)',
-                fontSize: '0.85rem',
-                fontWeight: 500,
-                transition: 'all 0.2s',
-              }}
-            >
-              <span>{LANGUAGES[lang].flag}</span>
-              <span>{LANGUAGES[lang].nativeName}</span>
-              <span style={{ fontSize: '0.7rem' }}>▼</span>
-            </button>
-            {langOpen && (
-              <>
-                <div
-                  style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: -1 }}
-                  onClick={() => setLangOpen(false)}
-                />
-                <div style={{
-                  position: 'absolute',
-                  top: '100%',
-                  right: 0,
-                  marginTop: '8px',
-                  background: 'white',
-                  borderRadius: '12px',
-                  boxShadow: '0 12px 32px rgba(0,0,0,0.15)',
-                  overflow: 'hidden',
-                  minWidth: '160px',
-                  zIndex: 100,
-                }}>
-                  {(Object.keys(LANGUAGES) as Language[]).map((code) => (
-                    <button
-                      key={code}
-                      onClick={() => { setLang(code); setLangOpen(false) }}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '10px',
-                        width: '100%',
-                        padding: '12px 16px',
-                        color: lang === code ? '#0F4C3A' : '#525C57',
-                        background: lang === code ? '#E8F5F0' : 'transparent',
-                        fontSize: '0.9rem',
-                        fontWeight: lang === code ? 600 : 400,
-                        transition: 'all 0.2s',
-                        textAlign: 'start',
-                      }}
-                      onMouseEnter={(e) => {
-                        if (lang !== code) e.currentTarget.style.background = '#F8FAF9'
-                      }}
-                      onMouseLeave={(e) => {
-                        if (lang !== code) e.currentTarget.style.background = 'transparent'
-                      }}
-                    >
-                      <span style={{ fontSize: '1.2rem' }}>{LANGUAGES[code].flag}</span>
-                      <span>{LANGUAGES[code].nativeName}</span>
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-
-          <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            style={{
-              display: 'none',
-              color: 'white',
-              fontSize: '1.5rem',
-              padding: '4px',
-            }}
-            className="mobile-menu-btn"
-          >
-            ☰
-          </button>
-        </div>
-      </div>
-
-      {mobileOpen && (
         <div style={{
-          background: 'rgba(15, 76, 58, 0.98)',
-          borderTop: '1px solid rgba(255,255,255,0.1)',
-          padding: '16px 0',
+          maxWidth: 1400, margin: '0 auto',
+          padding: '0 20px',
+          display: 'flex', alignItems: 'center',
+          justifyContent: 'space-between',
+          height: 62,
         }}>
-          <div className="container" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            {navLinks.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
+
+          {/* Logo */}
+          <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+            <div style={{
+              width: 36, height: 36, borderRadius: 8,
+              background: COLORS.gold, display: 'flex', alignItems: 'center',
+              justifyContent: 'center', fontSize: 18, fontWeight: 700, color: COLORS.deepDark,
+            }}>ف</div>
+            <span style={{ color: COLORS.sand, fontSize: 18, fontWeight: 700 }}>Filanwaa</span>
+          </Link>
+
+          {/* Desktop Nav */}
+          <nav style={{ display: 'flex', alignItems: 'center', gap: 4, flexWrap: 'nowrap', overflow: 'hidden' }}
+            className="desktop-nav"
+          >
+            {menuItems.map((item) => (
+              <Link key={item.key} to={item.path}
+                onClick={() => setMenuOpen(false)}
                 style={{
-                  color: location.pathname === link.to ? '#E8B14B' : 'white',
-                  padding: '12px 16px',
-                  borderRadius: '8px',
-                  fontSize: '1rem',
-                  fontWeight: 500,
-                  background: location.pathname === link.to ? 'rgba(232, 177, 75, 0.1)' : 'transparent',
+                  display: 'inline-block',
+                  padding: '7px 12px',
+                  color: COLORS.sand,
+                  textDecoration: 'none',
+                  fontWeight: 600,
+                  fontSize: '0.82rem',
+                  borderRadius: 6,
+                  whiteSpace: 'nowrap',
+                  transition: 'all 0.15s',
+                }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLElement).style.background = COLORS.gold
+                  ;(e.currentTarget as HTMLElement).style.color = COLORS.deepDark
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLElement).style.background = 'transparent'
+                  ;(e.currentTarget as HTMLElement).style.color = COLORS.sand
                 }}
               >
-                {link.label}
+                {getLabel(item.key as keyof typeof t)}
               </Link>
             ))}
+          </nav>
+
+          {/* Lang + Hamburger */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+            <div style={{ display: 'flex', gap: 3 }}>
+              {(['so', 'en', 'ar'] as const).map(code => (
+                <button key={code} onClick={() => setLang(code)} style={{
+                  padding: '5px 9px', borderRadius: 5, border: 'none',
+                  background: lang === code ? COLORS.gold : 'rgba(212,165,55,0.12)',
+                  color: lang === code ? COLORS.deepDark : COLORS.sand,
+                  fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer',
+                  transition: 'all 0.15s',
+                }}>
+                  {code === 'so' ? 'SO' : code === 'en' ? 'EN' : 'AR'}
+                </button>
+              ))}
+            </div>
+
+            <button onClick={() => setMenuOpen(!menuOpen)} style={{
+              display: 'none', flexDirection: 'column', gap: 5,
+              background: 'none', border: 'none', cursor: 'pointer', padding: 6,
+            }} className="hamburger-btn">
+              {[0,1,2].map(i => (
+                <span key={i} style={{
+                  display: 'block', width: 22, height: 2,
+                  background: COLORS.sand, borderRadius: 2,
+                }} />
+              ))}
+            </button>
           </div>
         </div>
+      </header>
+
+      {/* Mobile menu */}
+      {menuOpen && (
+        <div style={{
+          position: 'fixed', top: 65, left: 0, right: 0, bottom: 0,
+          background: 'rgba(6,37,28,0.97)', zIndex: 99,
+          display: 'flex', flexDirection: 'column',
+          padding: '24px 20px', gap: 8, overflowY: 'auto',
+        }}>
+          {menuItems.map(item => (
+            <Link key={item.key} to={item.path}
+              onClick={() => setMenuOpen(false)}
+              style={{
+                display: 'block', padding: '14px 18px',
+                color: COLORS.sand, textDecoration: 'none',
+                fontWeight: 600, fontSize: '1rem', borderRadius: 8,
+                border: '1px solid rgba(212,165,55,0.15)',
+              }}
+            >
+              {getLabel(item.key as keyof typeof t)}
+            </Link>
+          ))}
+        </div>
       )}
-    </header>
+
+      <style>{`
+        @media (max-width: 900px) {
+          .desktop-nav { display: none !important; }
+          .hamburger-btn { display: flex !important; }
+        }
+      `}</style>
+    </>
   )
 }

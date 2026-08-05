@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { LanguageProvider } from './i18n/LanguageContext'
 import { Header } from './components/Header'
 import { Footer } from './components/Footer'
@@ -30,46 +30,72 @@ import { ZakahPage } from './pages/ZakahPage'
 import { HajjPage } from './pages/HajjPage'
 import { DownloadPage } from './pages/DownloadPage'
 import { CountryPage } from './pages/CountryPage'
+import { FreeSitesPage } from './pages/FreeSitesPage'
+
+const FULL_WIDTH_PATHS = ['/', '/free-sites']
+
+function Layout() {
+  const location = useLocation()
+  const isFullWidth = FULL_WIDTH_PATHS.includes(location.pathname)
+
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <Header />
+      <div style={{
+        flex: 1,
+        display: 'flex',
+        maxWidth: isFullWidth ? '100%' : 1400,
+        margin: '0 auto',
+        width: '100%',
+        padding: isFullWidth ? 0 : '24px 20px',
+        gap: 24,
+        alignItems: 'flex-start',
+      }}>
+        <main style={{ flex: 1, minWidth: 0 }}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/diinta" element={<ReligionPage />} />
+            <Route path="/tecnolijiyada" element={<TechnologyPage />} />
+            <Route path="/suugaanta" element={<CulturePage />} />
+            <Route path="/quraanka" element={<QuranPage />} />
+            <Route path="/nagu-baar" element={<AboutPage />} />
+            <Route path="/nala-soo-xiriir" element={<ContactPage />} />
+            <Route path="/shuruudaha" element={<TermsPage />} />
+            <Route path="/siraha" element={<PrivacyPage />} />
+            <Route path="/xikmad" element={<WisdomPage />} />
+            <Route path="/maahmaah" element={<ProverbsPage />} />
+            <Route path="/sheeko" element={<StoryPage />} />
+            <Route path="/heeso" element={<SongsPage />} />
+            <Route path="/python" element={<PythonPage />} />
+            <Route path="/html" element={<HtmlPage />} />
+            <Route path="/css" element={<CssPage />} />
+            <Route path="/php" element={<PhpPage />} />
+            <Route path="/r" element={<RPage />} />
+            <Route path="/java" element={<JavaPage />} />
+            <Route path="/cpp" element={<CppPage />} />
+            <Route path="/sql" element={<SqlPage />} />
+            <Route path="/diinta/towxiid" element={<TowxiidPage />} />
+            <Route path="/diinta/salaadda" element={<SalaahPage />} />
+            <Route path="/diinta/soonka" element={<SawmPage />} />
+            <Route path="/diinta/zakada" element={<ZakahPage />} />
+            <Route path="/diinta/xaj" element={<HajjPage />} />
+            <Route path="/download" element={<DownloadPage />} />
+            <Route path="/baro-dalkaaga" element={<CountryPage />} />
+            <Route path="/free-sites" element={<FreeSitesPage />} />
+          </Routes>
+        </main>
+
+      </div>
+      <Footer />
+    </div>
+  )
+}
+
 function App() {
   return (
     <LanguageProvider>
       <BrowserRouter>
-        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-          <Header />
-          <main style={{ flex: 1 }}>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/diinta" element={<ReligionPage />} />
-              <Route path="/tecnolijiyada" element={<TechnologyPage />} />
-              <Route path="/suugaanta" element={<CulturePage />} />
-              <Route path="/quraanka" element={<QuranPage />} />
-              <Route path="/nagu-baar" element={<AboutPage />} />
-              <Route path="/nala-soo-xiriir" element={<ContactPage />} />
-              <Route path="/shuruudaha" element={<TermsPage />} />
-              <Route path="/siraha" element={<PrivacyPage />} />
-              <Route path="/xikmad" element={<WisdomPage />} />
-              <Route path="/maahmaah" element={<ProverbsPage />} />
-             <Route path="/sheeko" element={<StoryPage />} />
-             <Route path="/heeso" element={<SongsPage />} />
-             <Route path="/python" element={<PythonPage />} />
-             <Route path="/html" element={<HtmlPage />} />
-             <Route path="/css" element={<CssPage />} />
-             <Route path="/php" element={<PhpPage />} />
-             <Route path="/r" element={<RPage />} />
-             <Route path="/java" element={<JavaPage />} />
-             <Route path="/cpp" element={<CppPage />} />
-             <Route path="/sql" element={<SqlPage />} />
-             <Route path="/diinta/towxiid" element={<TowxiidPage />} />
-             <Route path="/diinta/salaadda" element={<SalaahPage />} />
-             <Route path="/diinta/soonka" element={<SawmPage />} />
-             <Route path="/diinta/zakada" element={<ZakahPage />} />
-             <Route path="/diinta/xaj" element={<HajjPage />} />
-             <Route path="/download" element={<DownloadPage />} />
-             <Route path="/baro-dalkaaga" element={<CountryPage />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
+        <Layout />
       </BrowserRouter>
     </LanguageProvider>
   )

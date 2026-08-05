@@ -1,372 +1,298 @@
 import { Link } from 'react-router-dom'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useLanguage } from '../i18n/LanguageContext'
 import { SubscribeSection } from '../components/SubscribeSection'
 import { AdBanner } from '../components/AdBanner'
+
+const COLORS = {
+  deep: '#0B3D2E', deepDark: '#06251C', gold: '#D4A537',
+  goldLight: '#E8C468', terracotta: '#C1652F', sand: '#F5EDE0',
+  ink: '#12211B', slate: '#4A554E',
+}
+
+function WeaveDivider({ tone = COLORS.gold, opacity = 0.35 }: { tone?: string; opacity?: number }) {
+  return (
+    <div aria-hidden="true" style={{
+      height: '16px', width: '100%', opacity,
+      backgroundImage: `repeating-linear-gradient(135deg, ${tone} 0px, ${tone} 2px, transparent 2px, transparent 12px), repeating-linear-gradient(45deg, ${tone} 0px, ${tone} 2px, transparent 2px, transparent 12px)`,
+    }} />
+  )
+}
+
+const slides = [
+  {
+    image: 'https://images.pexels.com/photos/2845462/pexels-photo-2845462.jpeg?auto=compress&cs=tinysrgb&w=1600',
+    icon: '🕌', path: '/diinta',
+    labels: { so: 'Diinta Islaamka', en: 'Islamic Faith', ar: 'الدين الإسلامي' },
+    descs: {
+      so: 'Baro shanta rukni ee Islaamka — Towxiid, Salaad, Soonka, Zakad, iyo Xaj.',
+      en: 'Learn the five pillars of Islam — Tawhid, Prayer, Fasting, Zakat, and Hajj.',
+      ar: 'تعلم أركان الإسلام الخمسة — التوحيد والصلاة والصيام والزكاة والحج.',
+    },
+  },
+  {
+    image: 'https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&w=1600',
+    icon: '💻', path: '/tecnolijiyada',
+    labels: { so: 'Tecnolijiyada', en: 'Technology', ar: 'التقنية' },
+    descs: {
+      so: 'Baro Python, HTML, CSS, Java, SQL iyo kuwo kale — bilowga ilaa heerka sare.',
+      en: 'Learn Python, HTML, CSS, Java, SQL and more — from beginner to advanced.',
+      ar: 'تعلم Python وHTML وCSS وJava وSQL والمزيد — من المبتدئ إلى المتقدم.',
+    },
+  },
+  {
+    image: 'https://images.pexels.com/photos/1907785/pexels-photo-1907785.jpeg?auto=compress&cs=tinysrgb&w=1600',
+    icon: '📜', path: '/suugaanta',
+    labels: { so: 'Suugaanta Soomaalida', en: 'Somali Culture', ar: 'الثقافة الصومالية' },
+    descs: {
+      so: 'Maahmaahyo, Xikmado, Gabayo, Heeso iyo Sheekooyinka dhaqanka Soomaalida.',
+      en: 'Proverbs, Wisdom, Poetry, Songs and Stories of Somali cultural heritage.',
+      ar: 'الأمثال والحكم والشعر والأغاني وقصص التراث الثقافي الصومالي.',
+    },
+  },
+]
+
+const SLIDE_DURATION = 6000
+
+function HeroSlider() {
+  const { lang } = useLanguage()
+  const [current, setCurrent] = useState(0)
+  const [animating, setAnimating] = useState(false)
+  const [progress, setProgress] = useState(0)
+  const progressRef = useRef<number | null>(null)
+  const startRef = useRef<number>(Date.now())
+
+  const goTo = useCallback((idx: number) => {
+    if (animating) return
+    setAnimating(true)
+    setProgress(0)
+    startRef.current = Date.now()
+    setTimeout(() => { setCurrent(idx); setAnimating(false) }, 400)
+  }, [animating])
+
+  // Progress bar animation
+  useEffect(() => {
+    setProgress(0)
+    startRef.current = Date.now()
+    const tick = () => {
+      const elapsed = Date.now() - startRef.current
+      const pct = Math.min((elapsed / SLIDE_DURATION) * 100, 100)
+      setProgress(pct)
+      if (pct < 100) progressRef.current = requestAnimationFrame(tick)
+    }
+    progressRef.current = requestAnimationFrame(tick)
+    return () => { if (progressRef.current) cancelAnimationFrame(progressRef.current) }
+  }, [current])
+
+  // Auto advance
+  useEffect(() => {
+    const t = setTimeout(() => goTo((current + 1) % slides.length), SLIDE_DURATION)
+    return () => clearTimeout(t)
+  }, [current, goTo])
+
+  const slide = slides[current]
+  const l = lang as 'so' | 'en' | 'ar'
+
+  return (
+    <div style={{ position: 'relative', width: '100vw', height: '62vh', minHeight: 400, overflow: 'hidden', marginLeft: 0 }}>
+
+      {/* Background images — preload all, show active */}
+      {slides.map((s, i) => (
+        <div key={i} style={{
+          position: 'absolute', inset: 0,
+          backgroundImage: `url(${s.image})`,
+          backgroundSize: 'cover', backgroundPosition: 'center',
+          transition: 'opacity 0.6s ease',
+          opacity: i === current ? (animating ? 0 : 1) : 0,
+        }} />
+      ))}
+
+      {/* Overlay gradient */}
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: 'linear-gradient(135deg, rgba(6,37,28,0.90) 0%, rgba(6,37,28,0.60) 55%, rgba(6,37,28,0.25) 100%)',
+      }} />
+
+      {/* Weave pattern */}
+      <div aria-hidden="true" style={{
+        position: 'absolute', inset: 0, opacity: 0.04, pointerEvents: 'none',
+        backgroundImage: `repeating-linear-gradient(135deg, ${COLORS.gold} 0px, ${COLORS.gold} 1.5px, transparent 1.5px, transparent 34px), repeating-linear-gradient(45deg, ${COLORS.gold} 0px, ${COLORS.gold} 1.5px, transparent 1.5px, transparent 34px)`,
+      }} />
+
+      {/* Content */}
+      <div style={{
+        position: 'absolute', inset: 0, zIndex: 2,
+        display: 'flex', alignItems: 'center',
+        padding: '0 6vw',
+      }}>
+        <div style={{
+          maxWidth: 680,
+          opacity: animating ? 0 : 1,
+          transform: animating ? 'translateY(24px)' : 'translateY(0)',
+          transition: 'opacity 0.5s ease, transform 0.5s ease',
+        }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            padding: '6px 18px', borderRadius: 30,
+            border: `1px solid ${COLORS.gold}`,
+            color: COLORS.gold, fontSize: 13, fontWeight: 600,
+            letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 22,
+          }}>
+            <span>{slide.icon}</span>
+            <span>{slide.labels[l]}</span>
+          </div>
+
+          <h1 style={{
+            color: COLORS.sand, fontFamily: "'Fraunces', serif",
+            fontSize: 'clamp(2.6rem, 6vw, 4.5rem)',
+            fontWeight: 700, lineHeight: 1.08, marginBottom: 20,
+          }}>
+            {slide.labels[l]}
+          </h1>
+
+          <p style={{
+            color: 'rgba(245,237,224,0.82)',
+            fontSize: 'clamp(1rem, 1.8vw, 1.2rem)',
+            lineHeight: 1.8, marginBottom: 38, maxWidth: 560,
+          }}>
+            {slide.descs[l]}
+          </p>
+
+          <Link to={slide.path} style={{
+            display: 'inline-block', padding: '15px 40px',
+            background: COLORS.gold, color: COLORS.deepDark,
+            borderRadius: 6, fontWeight: 700, fontSize: '1rem',
+            textDecoration: 'none', transition: 'all 0.25s',
+            boxShadow: '0 8px 28px rgba(212,165,55,0.4)',
+          }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = COLORS.goldLight; (e.currentTarget as HTMLElement).style.transform = 'translateY(-3px)' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = COLORS.gold; (e.currentTarget as HTMLElement).style.transform = 'none' }}
+          >
+            {l === 'so' ? 'Baro Hadda →' : l === 'ar' ? 'تعلم الآن ←' : 'Learn Now →'}
+          </Link>
+        </div>
+      </div>
+
+      {/* Arrow buttons */}
+      {[
+        { dir: 'prev', side: 'left' as const, idx: (current - 1 + slides.length) % slides.length, label: '‹' },
+        { dir: 'next', side: 'right' as const, idx: (current + 1) % slides.length, label: '›' },
+      ].map(btn => (
+        <button key={btn.dir} onClick={() => goTo(btn.idx)} style={{
+          position: 'absolute', top: '50%', [btn.side]: 24,
+          transform: 'translateY(-50%)', zIndex: 4,
+          width: 48, height: 48, borderRadius: '50%',
+          background: 'rgba(245,237,224,0.12)',
+          border: '1px solid rgba(245,237,224,0.3)',
+          color: COLORS.sand, fontSize: 22, cursor: 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          transition: 'all 0.2s', backdropFilter: 'blur(4px)',
+        }}
+          onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(212,165,55,0.45)'}
+          onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'rgba(245,237,224,0.12)'}
+        >
+          {btn.label}
+        </button>
+      ))}
+
+      {/* Bottom controls */}
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 4,
+        padding: '0 24px 28px',
+        display: 'flex', alignItems: 'center', gap: 16,
+      }}>
+        {/* Slide bars */}
+        {slides.map((_, i) => (
+          <div key={i} onClick={() => goTo(i)} style={{
+            flex: 1, height: 4, borderRadius: 2,
+            background: 'rgba(245,237,224,0.25)',
+            cursor: 'pointer', overflow: 'hidden',
+            maxWidth: 160,
+          }}>
+            <div style={{
+              height: '100%', borderRadius: 2,
+              background: COLORS.gold,
+              width: i === current ? `${progress}%` : i < current ? '100%' : '0%',
+              transition: i === current ? 'none' : 'width 0.3s',
+            }} />
+          </div>
+        ))}
+
+        {/* Counter */}
+        <span style={{ color: 'rgba(245,237,224,0.55)', fontSize: 13, fontWeight: 600, marginLeft: 'auto' }}>
+          {String(current + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
+        </span>
+      </div>
+    </div>
+  )
+}
 
 export function HomePage() {
   const { t } = useLanguage()
 
   const sections = [
-    {
-      to: '/diinta',
-      title: t.home.religionTitle,
-      desc: t.home.religionDesc,
-      icon: '🕌',
-      gradient: 'linear-gradient(135deg, #0F4C3A, #2E8B5C)',
-      image: 'https://images.pexels.com/photos/162359/pexels-photo-162359.jpeg?auto=compress&cs=tinysrgb&w=800',
-    },
-    {
-      to: '/tecnolijiyada',
-      title: t.home.techTitle,
-      desc: t.home.techDesc,
-      icon: '💻',
-      gradient: 'linear-gradient(135deg, #1A1F1C, #3E4642)',
-      image: 'https://images.pexels.com/photos/270404/pexels-photo-270404.jpeg?auto=compress&cs=tinysrgb&w=800',
-    },
-    {
-      to: '/suugaanta',
-      title: t.home.cultureTitle,
-      desc: t.home.cultureDesc,
-      icon: '📜',
-      gradient: 'linear-gradient(135deg, #7C5817, #E8B14B)',
-      image: 'https://images.pexels.com/photos/2034335/pexels-photo-2034335.jpeg?auto=compress&cs=tinysrgb&w=800',
-    },
+    { to: '/diinta', title: t.religionTitle, desc: t.religionDesc, icon: '🕌', color: COLORS.deep },
+    { to: '/tecnolijiyada', title: t.techTitle, desc: t.techDesc, icon: '💻', color: '#1F2A26' },
+    { to: '/suugaanta', title: t.cultureTitle, desc: t.cultureDesc, icon: '📜', color: COLORS.terracotta },
   ]
 
   const stats = [
-    { value: '150+', label: t.home.statArticles },
-    { value: '3', label: t.home.statLanguages },
-    { value: '10K+', label: t.home.statUsers },
-    { value: '20+', label: t.home.statTopics },
+    { value: '150+', label: t.statArticles },
+    { value: '3', label: t.statLanguages },
+    { value: '10K+', label: t.statUsers },
+    { value: '20+', label: t.statTopics },
   ]
 
   return (
-    <div>
-      {/* Hero */}
-      <section style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: 'linear-gradient(135deg, #0F4C3A 0%, #051F18 100%)',
-        position: 'relative',
-        overflow: 'hidden',
-        paddingTop: '72px',
-      }}>
-        <div style={{
-          position: 'absolute',
-          top: '20%',
-          right: '10%',
-          width: '600px',
-          height: '600px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(232,177,75,0.15) 0%, transparent 70%)',
-          pointerEvents: 'none',
-          animation: 'pulse 4s ease-in-out infinite',
-        }} />
-        <div style={{
-          position: 'absolute',
-          bottom: '10%',
-          left: '5%',
-          width: '400px',
-          height: '400px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(46,139,92,0.2) 0%, transparent 70%)',
-          pointerEvents: 'none',
-        }} />
-
-        {/* Decorative pattern */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          opacity: 0.03,
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L0 30L30 60L60 30Z' fill='white'/%3E%3C/svg%3E")`,
-          pointerEvents: 'none',
-        }} />
-
-        <div className="container" style={{ position: 'relative', textAlign: 'center', zIndex: 1 }}>
-          <div style={{
-            display: 'inline-block',
-            padding: '8px 20px',
-            borderRadius: '50px',
-            background: 'rgba(232,177,75,0.15)',
-            border: '1px solid rgba(232,177,75,0.3)',
-            color: '#E8B14B',
-            fontSize: '0.85rem',
-            fontWeight: 500,
-            marginBottom: '24px',
-            animation: 'fadeIn 1s ease-out',
-          }}>
-            ✦ Diinta • Tecnolijiyada • Suugaanta ✦
-          </div>
-
-          <h1 style={{
-            color: 'white',
-            fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
-            fontWeight: 800,
-            lineHeight: 1.1,
-            marginBottom: '16px',
-            letterSpacing: '-0.02em',
-            animation: 'fadeInUp 0.8s ease-out',
-          }}>
-            {t.home.heroWelcome}
-          </h1>
-
-          <p style={{
-            color: '#E8B14B',
-            fontSize: 'clamp(1.1rem, 2.5vw, 1.5rem)',
-            fontWeight: 500,
-            maxWidth: '700px',
-            margin: '0 auto 12px',
-            lineHeight: 1.4,
-            animation: 'fadeInUp 0.9s ease-out',
-          }}>
-            {t.home.heroJoin}
-          </p>
-
-          <p style={{
-            color: 'rgba(255,255,255,0.8)',
-            fontSize: 'clamp(1rem, 2vw, 1.3rem)',
-            maxWidth: '700px',
-            margin: '0 auto 40px',
-            lineHeight: 1.6,
-            animation: 'fadeInUp 1s ease-out',
-          }}>
-            {t.home.heroSubtitle}
-          </p>
-
-          <div style={{
-            display: 'flex',
-            gap: '16px',
-            justifyContent: 'center',
-            flexWrap: 'wrap',
-            animation: 'fadeInUp 1.2s ease-out',
-          }}>
-            <Link
-              to="/diinta"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '16px 36px',
-                borderRadius: '50px',
-                background: 'linear-gradient(135deg, #E8B14B, #D49A2E)',
-                color: '#0F4C3A',
-                fontSize: '1.1rem',
-                fontWeight: 600,
-                boxShadow: '0 12px 32px rgba(232,177,75,0.3)',
-                transition: 'all 0.3s',
-                textDecoration: 'none',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-4px)'
-                e.currentTarget.style.boxShadow = '0 16px 40px rgba(232,177,75,0.4)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)'
-                e.currentTarget.style.boxShadow = '0 12px 32px rgba(232,177,75,0.3)'
-              }}
-            >
-              {t.home.heroCta}
-            </Link>
-            <Link
-              to="/quraanka"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '16px 36px',
-                borderRadius: '50px',
-                background: 'rgba(255,255,255,0.1)',
-                border: '1px solid rgba(255,255,255,0.2)',
-                color: 'white',
-                fontSize: '1.1rem',
-                fontWeight: 600,
-                transition: 'all 0.3s',
-                textDecoration: 'none',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(255,255,255,0.15)'
-                e.currentTarget.style.transform = 'translateY(-4px)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(255,255,255,0.1)'
-                e.currentTarget.style.transform = 'translateY(0)'
-              }}
-            >
-              🎧 {t.home.heroSecondaryCta}
-            </Link>
-          </div>
-        </div>
-      </section>
+    <div style={{ background: COLORS.sand }}>
+      <HeroSlider />
+      <WeaveDivider tone={COLORS.gold} opacity={0.5} />
 
       {/* Stats */}
-      <section style={{ padding: '64px 0', background: 'white' }}>
+      <section style={{ padding: '56px 0', background: 'white' }}>
         <div className="container">
-          <h2 style={{
-            textAlign: 'center',
-            fontSize: '2rem',
-            fontWeight: 700,
-            color: '#0F4C3A',
-            marginBottom: '48px',
-          }}>
-            {t.home.statsTitle}
-          </h2>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: '24px',
-          }}
-            className="stats-grid"
-          >
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', rowGap: '32px' }}>
             {stats.map((stat, i) => (
-              <div
-                key={i}
-                style={{
-                  textAlign: 'center',
-                  padding: '32px 16px',
-                  borderRadius: '20px',
-                  background: 'linear-gradient(135deg, #F8FAF9, #EEF2F0)',
-                  border: '1px solid #D8DFDB',
-                  transition: 'all 0.3s',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-8px)'
-                  e.currentTarget.style.boxShadow = '0 12px 32px rgba(15,76,58,0.1)'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)'
-                  e.currentTarget.style.boxShadow = 'none'
-                }}
-              >
-                <div style={{
-                  fontSize: '3rem',
-                  fontWeight: 800,
-                  background: 'linear-gradient(135deg, #0F4C3A, #2E8B5C)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  marginBottom: '8px',
-                }}>
-                  {stat.value}
-                </div>
-                <div style={{ color: '#525C57', fontSize: '0.95rem', fontWeight: 500 }}>
-                  {stat.label}
-                </div>
+              <div key={i} style={{ padding: '0 36px', borderRight: i < stats.length - 1 ? '1px solid #E2D9C8' : 'none', textAlign: 'center' }}>
+                <div style={{ fontFamily: "'Fraunces', serif", fontSize: '2.75rem', fontWeight: 600, color: COLORS.deep, lineHeight: 1 }}>{stat.value}</div>
+                <div style={{ color: COLORS.slate, fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', marginTop: '10px' }}>{stat.label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Three Sections */}
-      <section className="section" style={{ background: '#F8FAF9' }}>
+      {/* Sections */}
+      <section className="section" style={{ background: COLORS.sand }}>
         <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '64px' }}>
-            <h2 className="section-title">{t.home.sectionsTitle}</h2>
-            <p className="section-subtitle" style={{ margin: '0 auto' }}>
-              {t.home.sectionsSubtitle}
-            </p>
+          <div style={{ textAlign: 'center', marginBottom: '56px' }}>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', fontWeight: 600, color: COLORS.ink, marginBottom: '14px' }}>{t.sectionsTitle}</h2>
+            <p style={{ color: COLORS.slate, fontSize: '1.05rem', maxWidth: '560px', margin: '0 auto', lineHeight: 1.6 }}>{t.sectionsSubtitle}</p>
           </div>
-
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '32px',
-          }}
-            className="cards-grid"
-          >
-            {sections.map((section, i) => (
-              <Link
-                key={section.to}
-                to={section.to}
-                style={{
-                  display: 'block',
-                  borderRadius: '24px',
-                  overflow: 'hidden',
-                  background: 'white',
-                  boxShadow: '0 4px 12px rgba(15,76,58,0.08)',
-                  transition: 'all 0.4s',
-                  textDecoration: 'none',
-                  animation: `fadeInUp 0.6s ease-out ${i * 0.15}s both`,
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-12px)'
-                  e.currentTarget.style.boxShadow = '0 24px 64px rgba(15,76,58,0.16)'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)'
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(15,76,58,0.08)'
-                }}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '28px' }}>
+            {sections.map((section) => (
+              <Link key={section.to} to={section.to} style={{
+                display: 'block', padding: '40px 32px', borderRadius: '4px', background: 'white',
+                borderTop: `5px solid ${section.color}`, boxShadow: '0 2px 10px rgba(18,33,27,0.06)',
+                transition: 'transform 0.3s, box-shadow 0.3s', textDecoration: 'none',
+              }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.boxShadow = '0 18px 40px rgba(18,33,27,0.14)' }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 10px rgba(18,33,27,0.06)' }}
               >
-                <div style={{
-                  height: '240px',
-                  background: section.gradient,
-                  position: 'relative',
-                  overflow: 'hidden',
-                }}>
-                  <img
-                    src={section.image}
-                    alt={section.title}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      opacity: 0.7,
-                      transition: 'transform 0.6s',
-                    }}
-                    onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.1)' }}
-                    onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)' }}
-                  />
-                  <div style={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    fontSize: '4rem',
-                    filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.3))',
-                  }}>
-                    {section.icon}
-                  </div>
+                <div style={{ width: '58px', height: '58px', background: section.color, transform: 'rotate(45deg)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '28px' }}>
+                  <span style={{ transform: 'rotate(-45deg)', fontSize: '1.6rem' }}>{section.icon}</span>
                 </div>
-                <div style={{ padding: '32px' }}>
-                  <h3 style={{
-                    fontSize: '1.5rem',
-                    fontWeight: 700,
-                    color: '#0F4C3A',
-                    marginBottom: '12px',
-                  }}>
-                    {section.title}
-                  </h3>
-                  <p style={{
-                    color: '#525C57',
-                    fontSize: '0.95rem',
-                    lineHeight: 1.6,
-                    marginBottom: '20px',
-                  }}>
-                    {section.desc}
-                  </p>
-                  <span style={{
-                    color: '#0F4C3A',
-                    fontWeight: 600,
-                    fontSize: '0.9rem',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                  }}>
-                    {t.home.learnMore} →
-                  </span>
-                </div>
+                <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: '1.4rem', fontWeight: 600, color: COLORS.ink, marginBottom: '12px' }}>{section.title}</h3>
+                <p style={{ color: COLORS.slate, fontSize: '0.95rem', lineHeight: 1.65, marginBottom: '22px' }}>{section.desc}</p>
+                <span style={{ color: section.color, fontWeight: 700, fontSize: '0.88rem' }}>{t.learnMore} →</span>
               </Link>
             ))}
           </div>
         </div>
       </section>
 
+      <WeaveDivider tone={COLORS.terracotta} opacity={0.3} />
       <AdBanner />
-
       <SubscribeSection />
     </div>
   )
