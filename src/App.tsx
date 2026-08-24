@@ -42,8 +42,10 @@ function Layout() {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <ScrollToTop />
       <Header />
       <div style={{
+      
         flex: 1,
         display: 'flex',
         maxWidth: isFullWidth ? '100%' : 1400,
