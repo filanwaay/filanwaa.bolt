@@ -127,6 +127,7 @@ export function CulturePage() {
                 onClick={() => {
                    if (i === 0) navigate('/maahmaah')
                    if (i === 1) navigate('/xikmad')
+                   if (i === 2) navigate('/gabayo')
                    if (i === 3) navigate('/heeso')
                    if (i === 4) navigate('/sheeko')
                    if (i === 5) navigate('/baro-dalkaaga')
