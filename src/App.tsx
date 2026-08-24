@@ -32,6 +32,7 @@ import { DownloadPage } from './pages/DownloadPage'
 import { CountryPage } from './pages/CountryPage'
 import { FreeSitesPage } from './pages/FreeSitesPage'
 import { GabayoPage } from './pages/GabayoPage'
+import { ScrollToTop } from './components/ScrollToTop'
 
 const FULL_WIDTH_PATHS = ['/', '/free-sites']
 
