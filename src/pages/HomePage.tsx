@@ -54,6 +54,29 @@ const slides = [
 
 const SLIDE_DURATION = 6000
 
+function FreeSitesSidebar() {
+  const { lang } = useLanguage()
+  const l = lang as 'so' | 'en' | 'ar'
+  const text = {
+    so: { title: '30 Site Bilaash', desc: 'Hel 30 website oo bilaash ah oo kaa caawinaya.', cta: 'Arag Liiska →' },
+    en: { title: '30 Free Sites', desc: 'Discover 30 useful free websites.', cta: 'View List →' },
+    ar: { title: '30 موقع مجاني', desc: 'اكتشف 30 موقعًا مجانيًا مفيدًا.', cta: 'عرض القائمة ←' },
+  }
+  const tx = text[l]
+  return (
+    <div style={{
+      width: 220, flexShrink: 0, height: '100%', background: COLORS.deepDark,
+      padding: '28px 20px', display: 'flex', flexDirection: 'column',
+      justifyContent: 'center', gap: 12, boxSizing: 'border-box',
+    }} className="free-sites-sidebar">
+      <div style={{ fontSize: 28 }}>🌐</div>
+      <h3 style={{ color: COLORS.sand, fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>{tx.title}</h3>
+      <p style={{ color: 'rgba(245,237,224,0.75)', fontSize: '0.85rem', lineHeight: 1.5, margin: 0 }}>{tx.desc}</p>
+      <Link to="/free-sites" style={{ color: COLORS.gold, fontWeight: 700, fontSize: '0.85rem', textDecoration: 'none' }}>{tx.cta}</Link>
+    </div>
+  )
+}
+
 function HeroSlider() {
   const { lang } = useLanguage()
   const [current, setCurrent] = useState(0)
@@ -94,7 +117,7 @@ function HeroSlider() {
   const l = lang as 'so' | 'en' | 'ar'
 
   return (
-    <div style={{ position: 'relative', width: '100vw', height: '62vh', minHeight: 400, overflow: 'hidden', marginLeft: 0 }}>
+    <div style={{ position: 'relative', width: '100%', height: '62vh', minHeight: 400, overflow: 'hidden', flex: 1 }}>
 
       {/* Background images — preload all, show active */}
       {slides.map((s, i) => (
@@ -245,7 +268,29 @@ export function HomePage() {
 
   return (
     <div style={{ background: COLORS.sand }}>
-      <HeroSlider />
+      <div style={{ display: 'flex', width: '100%', gap: 16, padding: 16, background: COLORS.ink, boxSizing: 'border-box' }} className="hero-with-sidebar">
+        <div style={{
+          flexShrink: 0, borderRadius: 14, border: `3px solid ${COLORS.gold}`,
+          boxShadow: '0 10px 30px rgba(0,0,0,0.5), inset 0 0 0 6px ' + COLORS.deepDark,
+          overflow: 'hidden', background: COLORS.deepDark,
+        }} className="free-sites-sidebar-frame">
+          <FreeSitesSidebar />
+        </div>
+        <div style={{
+          flex: 1, position: 'relative', borderRadius: 18,
+          border: `10px solid ${COLORS.deepDark}`,
+          boxShadow: '0 0 0 3px ' + COLORS.gold + ', 0 20px 50px rgba(0,0,0,0.55)',
+          overflow: 'hidden', background: COLORS.deepDark,
+        }} className="tv-frame">
+          {/* TV stand */}
+          <div style={{
+            position: 'absolute', bottom: -22, left: '50%', transform: 'translateX(-50%)',
+            width: 90, height: 14, borderRadius: 4, background: COLORS.deepDark,
+            boxShadow: '0 4px 8px rgba(0,0,0,0.4)', zIndex: 0,
+          }} className="tv-stand" />
+          <HeroSlider />
+        </div>
+      </div>
       <WeaveDivider tone={COLORS.gold} opacity={0.5} />
 
       {/* Stats */}
@@ -294,6 +339,14 @@ export function HomePage() {
       <WeaveDivider tone={COLORS.terracotta} opacity={0.3} />
       <AdBanner />
       <SubscribeSection />
+
+      <style>{`
+        @media (max-width: 768px) {
+          .hero-with-sidebar { flex-direction: column; padding: 10px !important; gap: 10px !important; }
+          .free-sites-sidebar { width: 100% !important; height: auto !important; }
+          .tv-stand { display: none; }
+        }
+      `}</style>
     </div>
   )
 }

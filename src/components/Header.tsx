@@ -18,7 +18,7 @@ export function Header() {
     { key: 'menuCulture', path: '/suugaanta' },
     { key: 'menuQuran', path: '/quraanka' },
     { key: 'menuDownload', path: '/download' },
-    { key: 'menuFreeSites', path: '/free-sites' },
+    
    
     { key: 'menuAbout', path: '/nagu-baar' },
     { key: 'menuContact', path: '/nala-soo-xiriir' },
