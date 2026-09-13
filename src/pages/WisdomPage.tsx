@@ -1,6 +1,9 @@
 import { useLanguage } from '../i18n/LanguageContext'
 import { SubscribeSection } from '../components/SubscribeSection'
 import { AdBanner } from '../components/AdBanner'
+import { PageHero } from '../components/PageHero'
+
+const COLORS = { gold: '#C89B3C', sand: '#F6F1E4', ink: '#12211B', slate: '#4A554E' }
 
 export function WisdomPage() {
   const { lang } = useLanguage()
@@ -19,73 +22,37 @@ export function WisdomPage() {
     { so: 'Rag waxa ugu faan badan mar dhoof iyo mar duul. Rag waxa ugu liita ciil kama baxe iyo calooshiisa la ciyaare.', en: 'What men boast about most is a journey and a raid. The worst in men is one who cannot let go of a grudge, and one whose hunger can be used against him.', ar: 'أكثر ما يفتخر به الرجال هو السفر والغزو. وأسوأ ما في الرجال من لا يتخلى عن الحقد، ومن يمكن استغلال جوعه ضده.' },
   ]
 
-  return (
-    <div style={{ paddingTop: '72px' }}>
-      <section style={{
-        padding: '80px 0',
-        background: 'linear-gradient(135deg, #0F4C3A 0%, #051F18 100%)',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-        <div style={{
-          position: 'absolute',
-          top: '-30%',
-          left: '-10%',
-          width: '500px',
-          height: '500px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(232,177,75,0.15) 0%, transparent 70%)',
-          pointerEvents: 'none',
-        }} />
-        <div className="container" style={{ position: 'relative', textAlign: 'center' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '20px' }}>🧠</div>
-          <h1 style={{
-            color: 'white',
-            fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-            fontWeight: 800,
-            marginBottom: '16px',
-            lineHeight: 1.2,
-          }}>
-            {lang === 'so' ? 'Xikmadaha Soomaaliyeed' : lang === 'ar' ? 'الحكم الصومالية' : 'Somali Wisdom'}
-          </h1>
-          <p style={{
-            color: 'rgba(255,255,255,0.8)',
-            fontSize: '1.2rem',
-            maxWidth: '700px',
-            margin: '0 auto',
-            lineHeight: 1.6,
-          }}>
-            {lang === 'so'
-              ? 'Murti ka dhalatay khibrad nololeed, oo si gaar ah loogu qaabeeyay saddex saddex.'
-              : lang === 'ar'
-              ? 'حكمة وُلدت من تجربة الحياة، مصاغة بأسلوب الثلاثيات المميز.'
-              : 'Wisdom born from life experience, uniquely shaped in threes.'}
-          </p>
-        </div>
-      </section>
+  const titles = {
+    so: { title: 'Xikmadaha Soomaaliyeed', sub: 'Murti ka dhalatay khibrad nololeed, oo si gaar ah loogu qaabeeyay saddex saddex.' },
+    en: { title: 'Somali Wisdom', sub: 'Wisdom born from life experience, uniquely shaped in threes.' },
+    ar: { title: 'الحكم الصومالية', sub: 'حكمة وُلدت من تجربة الحياة، مصاغة بأسلوب الثلاثيات المميز.' },
+  }[lang as 'so' | 'en' | 'ar']
 
-      <section className="section" style={{ background: '#F8FAF9' }}>
+  return (
+    <div style={{ background: COLORS.sand }}>
+      <PageHero icon="🧠" title={titles.title} subtitle={titles.sub} />
+
+      <section className="section">
         <div className="container">
-          <div style={{ display: 'grid', gap: '16px', maxWidth: '900px', margin: '0 auto' }}>
+          <div style={{ display: 'grid', gap: '1px', maxWidth: '900px', margin: '0 auto', background: '#E2D9C8', border: '1px solid #E2D9C8' }}>
             {wisdomItems.map((item, i) => (
               <div key={i} style={{
                 background: 'white',
-                borderRadius: '12px',
                 padding: '24px 28px',
-                borderLeft: '4px solid #0F4C3A',
-                boxShadow: '0 4px 12px rgba(15,76,58,0.06)',
+                borderLeft: `3px solid ${COLORS.gold}`,
               }}>
                 <p style={{
-                  fontSize: '1.05rem',
-                  fontWeight: 700,
-                  color: '#0F4C3A',
+                  fontFamily: "'Fraunces', serif",
+                  fontSize: '1.08rem',
+                  fontWeight: 600,
+                  color: COLORS.ink,
                   marginBottom: lang === 'so' ? 0 : '8px',
                   lineHeight: 1.6,
                 }}>
                   {item.so}
                 </p>
                 {lang !== 'so' && (
-                  <p style={{ color: '#525C57', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                  <p style={{ color: COLORS.slate, fontSize: '0.95rem', lineHeight: 1.6 }}>
                     {lang === 'ar' ? item.ar : item.en}
                   </p>
                 )}

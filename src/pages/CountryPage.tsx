@@ -1,6 +1,9 @@
 import { useLanguage } from '../i18n/LanguageContext'
 import { SubscribeSection } from '../components/SubscribeSection'
 import { AdBanner } from '../components/AdBanner'
+import { PageHero } from '../components/PageHero'
+
+const COLORS = { gold: '#C89B3C', sand: '#F6F1E4', ink: '#12211B', slate: '#4A554E' }
 
 export function CountryPage() {
   const { lang } = useLanguage()
@@ -35,57 +38,31 @@ export function CountryPage() {
   const l = labels[lang]
 
   return (
-    <div style={{ paddingTop: '72px' }}>
-      <section style={{ padding: '80px 0', background: 'linear-gradient(135deg, #0F4C3A 0%, #051F18 100%)', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: '-30%', right: '-10%', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(232,177,75,0.15) 0%, transparent 70%)', pointerEvents: 'none' }}></div>
-        <div className="container" style={{ position: 'relative', textAlign: 'center' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '20px' }}>🇸🇴</div>
-          <h1 style={{ color: 'white', fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 800, marginBottom: '16px', lineHeight: 1.2 }}>{l.title}</h1>
-          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.2rem', maxWidth: '700px', margin: '0 auto', lineHeight: 1.6 }}>{l.subtitle}</p>
-        </div>
-      </section>
+    <div style={{ background: COLORS.sand }}>
+      <PageHero icon="🇸🇴" title={l.title} subtitle={l.subtitle} />
 
-      <section className="section" style={{ background: '#F8FAF9' }}>
+      <section className="section">
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1px', background: '#E2D9C8', border: '1px solid #E2D9C8' }}>
             {regions.map((region, i) => (
-              <div
-                key={i}
-                style={{
-                  background: 'white',
-                  borderRadius: '16px',
-                  padding: '28px',
-                  boxShadow: '0 4px 12px rgba(15,76,58,0.08)',
-                  transition: 'all 0.3s',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = '0 12px 32px rgba(15,76,58,0.14)'
-                  e.currentTarget.style.transform = 'translateY(-4px)'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(15,76,58,0.08)'
-                  e.currentTarget.style.transform = 'translateY(0)'
-                }}
-              >
+              <div key={i} style={{ background: 'white', padding: '28px', borderTop: `3px solid ${COLORS.gold}` }}>
                 <div style={{
                   display: 'inline-block',
-                  padding: '4px 12px',
-                  borderRadius: '50px',
-                  background: '#E8F5F0',
-                  color: '#0F4C3A',
-                  fontSize: '0.75rem',
-                  fontWeight: 600,
+                  padding: '4px 12px', borderRadius: 20,
+                  background: 'rgba(200,155,60,0.1)',
+                  color: COLORS.gold,
+                  fontSize: '0.75rem', fontWeight: 700,
                   marginBottom: '12px',
                 }}>
                   {l.capital}: {region.capital}
                 </div>
-                <h2 style={{ fontSize: '1.3rem', fontWeight: 700, color: '#0F4C3A', marginBottom: '12px' }}>
+                <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: '1.3rem', fontWeight: 700, color: COLORS.ink, marginBottom: '12px' }}>
                   {region.name}
                 </h2>
-                <p style={{ color: '#8A7A3F', fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px' }}>
-                  {l.districts}:
+                <p style={{ color: COLORS.slate, fontSize: '0.78rem', fontWeight: 700, marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  {l.districts}
                 </p>
-                <p style={{ color: '#525C57', fontSize: '0.92rem', lineHeight: 1.7 }}>
+                <p style={{ color: COLORS.slate, fontSize: '0.92rem', lineHeight: 1.7 }}>
                   {region.districts.join(' • ')}
                 </p>
               </div>

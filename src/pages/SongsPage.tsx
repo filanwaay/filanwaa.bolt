@@ -1,6 +1,9 @@
 import { useLanguage } from '../i18n/LanguageContext'
 import { SubscribeSection } from '../components/SubscribeSection'
 import { AdBanner } from '../components/AdBanner'
+import { PageHero } from '../components/PageHero'
+
+const COLORS = { gold: '#C89B3C', sand: '#F6F1E4', ink: '#12211B', slate: '#4A554E' }
 
 export function SongsPage() {
   const { lang } = useLanguage()
@@ -46,55 +49,30 @@ export function SongsPage() {
     { title: 'Shinbirayahoow Heesa', file: 'shinbirayahoow-heesa.mp3' },
   ]
 
-  return (
-    <div style={{ paddingTop: '72px' }}>
-      <section style={{
-        padding: '80px 0',
-        background: 'linear-gradient(135deg, #A8781F 0%, #4A3608 100%)',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-        <div className="container" style={{ position: 'relative', textAlign: 'center' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '20px' }}>🎵</div>
-          <h1 style={{
-            color: 'white',
-            fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-            fontWeight: 800,
-            marginBottom: '16px',
-            lineHeight: 1.2,
-          }}>
-            {lang === 'so' ? 'Heesaha Wadaniga' : lang === 'ar' ? 'الأغاني الوطنية' : 'National Songs'}
-          </h1>
-          <p style={{
-            color: 'rgba(255,255,255,0.8)',
-            fontSize: '1.2rem',
-            maxWidth: '700px',
-            margin: '0 auto',
-            lineHeight: 1.6,
-          }}>
-            {lang === 'so'
-              ? 'Ururin heeso wadaniga ah oo Soomaaliyeed, xuska dhaqanka iyo taariikhda.'
-              : lang === 'ar'
-              ? 'مجموعة من الأغاني الوطنية الصومالية، احتفاءً بالتراث والتاريخ.'
-              : 'A collection of Somali national songs, celebrating heritage and history.'}
-          </p>
-        </div>
-      </section>
+  const titles = {
+    so: { title: 'Heesaha Wadaniga', sub: 'Ururin heeso wadaniga ah oo Soomaaliyeed, xuska dhaqanka iyo taariikhda.' },
+    en: { title: 'National Songs', sub: 'A collection of Somali national songs, celebrating heritage and history.' },
+    ar: { title: 'الأغاني الوطنية', sub: 'مجموعة من الأغاني الوطنية الصومالية، احتفاءً بالتراث والتاريخ.' },
+  }[lang as 'so' | 'en' | 'ar']
 
-      <section className="section" style={{ background: '#F8FAF9' }}>
+  return (
+    <div style={{ background: COLORS.sand }}>
+      <PageHero icon="🎵" title={titles.title} subtitle={titles.sub} />
+
+      <section className="section">
         <div className="container">
-          <div style={{ display: 'grid', gap: '16px', maxWidth: '800px', margin: '0 auto' }}>
+          <div style={{ display: 'grid', gap: '1px', maxWidth: '800px', margin: '0 auto', background: '#E2D9C8', border: '1px solid #E2D9C8' }}>
             {songs.map((song, i) => (
               <div key={i} style={{
                 background: 'white',
-                borderRadius: '12px',
                 padding: '20px 24px',
-                boxShadow: '0 4px 12px rgba(15,76,58,0.06)',
+                borderLeft: `3px solid ${COLORS.gold}`,
               }}>
                 <p style={{
+                  fontFamily: "'Fraunces', serif",
                   fontSize: '1.05rem',
                   fontWeight: 700,
-                  color: '#0F4C3A',
+                  color: COLORS.ink,
                   marginBottom: '12px',
                 }}>
                   {i + 1}. {song.title}

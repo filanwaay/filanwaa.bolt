@@ -1,6 +1,7 @@
 import { useLanguage } from '../i18n/LanguageContext'
 import { SubscribeSection } from '../components/SubscribeSection'
 import { AdBanner } from '../components/AdBanner'
+import { LessonPage } from '../components/LessonPage'
 
 export function CppPage() {
   const { lang } = useLanguage()
@@ -44,36 +45,23 @@ export function CppPage() {
     ],
   }
 
-  const sections = content[lang]
+  const titles = {
+    so: { title: 'Barashada C++', sub: 'Hage dhamaystiran oo bilowga ah, oo lagu barto barnaamij-sameynta xawaaraga sare leh.' },
+    en: { title: 'Learning C++', sub: 'A complete beginner\'s guide to high-performance programming.' },
+    ar: { title: 'تعلم C++', sub: 'دليل شامل للمبتدئين لتعلم البرمجة عالية الأداء.' },
+  }[lang as 'so' | 'en' | 'ar']
 
   return (
-    <div style={{ paddingTop: '72px' }}>
-      <section style={{ padding: '80px 0', background: 'linear-gradient(135deg, #1A1F1C 0%, #051F18 100%)', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: '-30%', left: '-10%', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(0,89,156,0.2) 0%, transparent 70%)', pointerEvents: 'none' }} />
-        <div className="container" style={{ position: 'relative', textAlign: 'center' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '20px' }}>⚙️</div>
-          <h1 style={{ color: 'white', fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 800, marginBottom: '16px', lineHeight: 1.2 }}>
-            {lang === 'so' ? 'Barashada C++' : lang === 'ar' ? 'تعلم C++' : 'Learning C++'}
-          </h1>
-          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.2rem', maxWidth: '700px', margin: '0 auto', lineHeight: 1.6 }}>
-            {lang === 'so' ? 'Hage dhamaystiran oo bilowga ah, oo lagu barto barnaamij-sameynta xawaaraga sare leh.' : lang === 'ar' ? 'دليل شامل للمبتدئين لتعلم البرمجة عالية الأداء.' : "A complete beginner's guide to high-performance programming."}
-          </p>
-        </div>
-      </section>
-      <section className="section" style={{ background: '#F8FAF9' }}>
-        <div className="container">
-          <div style={{ maxWidth: '800px', margin: '0 auto', background: 'white', borderRadius: '24px', padding: '48px', boxShadow: '0 12px 32px rgba(15,76,58,0.08)' }}>
-            {sections.map((section, i) => (
-              <div key={i} style={{ marginBottom: i < sections.length - 1 ? '32px' : '0', paddingBottom: i < sections.length - 1 ? '32px' : '0', borderBottom: i < sections.length - 1 ? '1px solid #D8DFDB' : 'none' }}>
-                <h2 style={{ fontSize: '1.3rem', fontWeight: 700, color: '#00599C', marginBottom: '12px' }}>{section.title}</h2>
-                <p style={{ color: '#525C57', fontSize: '1rem', lineHeight: 1.8 }}>{section.body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+    <>
+      <LessonPage
+        icon="⚙️"
+        title={titles.title}
+        subtitle={titles.sub}
+        sections={content[lang]}
+        accentColor="#00599C"
+      />
       <AdBanner />
       <SubscribeSection />
-    </div>
+    </>
   )
 }

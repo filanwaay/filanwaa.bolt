@@ -3,180 +3,141 @@ import { useLanguage } from '../i18n/LanguageContext'
 import { SubscribeSection } from '../components/SubscribeSection'
 import { AdBanner } from '../components/AdBanner'
 
+const COLORS = {
+  deep: '#0B3D2E', deepDark: '#06251C', gold: '#C89B3C',
+  goldLight: '#E8C468', terracotta: '#B5622E', sand: '#F6F1E4',
+  ink: '#12211B', slate: '#4A554E',
+}
+
+function CornerMark({ corner }: { corner: 'tl' | 'tr' | 'bl' | 'br' }) {
+  const pos: Record<string, React.CSSProperties> = {
+    tl: { top: -1, left: -1, borderTop: `2px solid ${COLORS.gold}`, borderLeft: `2px solid ${COLORS.gold}` },
+    tr: { top: -1, right: -1, borderTop: `2px solid ${COLORS.gold}`, borderRight: `2px solid ${COLORS.gold}` },
+    bl: { bottom: -1, left: -1, borderBottom: `2px solid ${COLORS.gold}`, borderLeft: `2px solid ${COLORS.gold}` },
+    br: { bottom: -1, right: -1, borderBottom: `2px solid ${COLORS.gold}`, borderRight: `2px solid ${COLORS.gold}` },
+  }
+  return <span aria-hidden="true" style={{ position: 'absolute', width: 24, height: 24, zIndex: 5, ...pos[corner] }} />
+}
+
 export function ReligionPage() {
- const { t, lang } = useLanguage()
+  const { t, lang } = useLanguage()
   const navigate = useNavigate()
 
   const pillars = [
-  {
-    title: t.religion.tawhid,
-    desc: t.religion.tawhidDesc,
-    icon: '🕌',
-    gradient: 'linear-gradient(135deg, #0F4C3A, #2E8B5C)',
-    image: 'https://images.pexels.com/photos/2845462/pexels-photo-2845462.jpeg?auto=compress&cs=tinysrgb&w=800',
-  },
-  {
-    title: t.religion.salah,
-    desc: t.religion.salahDesc,
-    icon: '🤲',
-    gradient: 'linear-gradient(135deg, #2E8B5C, #5FB088)',
-    image: 'https://images.pexels.com/photos/8122647/pexels-photo-8122647.jpeg?auto=compress&cs=tinysrgb&w=800',
-  },
-  {
-    title: t.religion.fasting,
-    desc: t.religion.fastingDesc,
-    icon: '🌙',
-    gradient: 'linear-gradient(135deg, #1A1F1C, #3E4642)',
-    image: 'https://images.pexels.com/photos/162359/pexels-photo-162359.jpeg?auto=compress&cs=tinysrgb&w=800',
-  },
-  {
-    title: lang === 'so' ? 'Zakada' : lang === 'ar' ? 'الزكاة' : 'Zakah',
-    desc: lang === 'so' ? 'Bixinta xoolaha loo baahan yahay masaakiinta iyo saboolka' : lang === 'ar' ? 'إعطاء المال للمحتاجين والفقراء' : 'Giving a fixed portion of wealth to those in need',
-    icon: '💰',
-    gradient: 'linear-gradient(135deg, #7C5817, #B8873A)',
-    image: 'https://images.pexels.com/photos/4386366/pexels-photo-4386366.jpeg?auto=compress&cs=tinysrgb&w=800',
-  },
-  {
-    title: t.religion.hajj,
-    desc: t.religion.hajjDesc,
-    icon: '🕋',
-    gradient: 'linear-gradient(135deg, #7C5817, #E8B14B)',
-    image: 'https://images.pexels.com/photos/4329890/pexels-photo-4329890.jpeg?auto=compress&cs=tinysrgb&w=800',
-  },
-]
-  return (
-    <div style={{ paddingTop: '72px' }}>
-      {/* Hero */}
-      <section style={{
-        padding: '80px 0',
-        background: 'linear-gradient(135deg, #0F4C3A 0%, #051F18 100%)',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-        <div style={{
-          position: 'absolute',
-          top: '-30%',
-          right: '-10%',
-          width: '500px',
-          height: '500px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(232,177,75,0.15) 0%, transparent 70%)',
-          pointerEvents: 'none',
-        }} />
-        <div className="container" style={{ position: 'relative', textAlign: 'center' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '20px' }}>🕌</div>
-          <h1 style={{
-            color: 'white',
-            fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-            fontWeight: 800,
-            marginBottom: '16px',
-            lineHeight: 1.2,
-          }}>
-            {t.religion.title}
-          </h1>
-          <p style={{
-            color: 'rgba(255,255,255,0.8)',
-            fontSize: '1.2rem',
-            maxWidth: '700px',
-            margin: '0 auto',
-            lineHeight: 1.6,
-          }}>
-            {t.religion.subtitle}
-          </p>
-        </div>
-      </section>
+    {
+      title: t.religion.tawhid,
+      desc: t.religion.tawhidDesc,
+      icon: '🕌',
+      image: 'https://images.pexels.com/photos/13302045/pexels-photo-13302045.jpeg?auto=compress&cs=tinysrgb&w=800',
+    },
+    {
+      title: t.religion.salah,
+      desc: t.religion.salahDesc,
+      icon: '🤲',
+      image: 'https://images.pexels.com/photos/32718453/pexels-photo-32718453.jpeg?auto=compress&cs=tinysrgb&w=800',
+    },
+    {
+      title: t.religion.fasting,
+      desc: t.religion.fastingDesc,
+      icon: '🌙',
+      image: 'https://images.pexels.com/photos/34520224/pexels-photo-34520224.jpeg?auto=compress&cs=tinysrgb&w=800',
+    },
+    {
+      title: lang === 'so' ? 'Zakada' : lang === 'ar' ? 'الزكاة' : 'Zakah',
+      desc: lang === 'so' ? 'Bixinta xoolaha loo baahan yahay masaakiinta iyo saboolka' : lang === 'ar' ? 'إعطاء المال للمحتاجين والفقراء' : 'Giving a fixed portion of wealth to those in need',
+      icon: '💰',
+      image: 'https://images.pexels.com/photos/4386366/pexels-photo-4386366.jpeg?auto=compress&cs=tinysrgb&w=800',
+    },
+    {
+      title: t.religion.hajj,
+      desc: t.religion.hajjDesc,
+      icon: '🕋',
+      image: 'https://images.pexels.com/photos/38303363/pexels-photo-38303363.jpeg?auto=compress&cs=tinysrgb&w=800',
+    },
+  ]
 
-      {/* Pillars */}
-      <section className="section" style={{ background: '#F8FAF9' }}>
+  const paths = ['/diinta/towxiid', '/diinta/salaadda', '/diinta/soonka', '/diinta/zakada', '/diinta/xaj']
+
+  return (
+    <div style={{ background: COLORS.sand }}>
+      {/* Hero, framed like the homepage */}
+      <div style={{ background: COLORS.ink, padding: '28px 6vw' }}>
+        <div style={{ position: 'relative', maxWidth: 1400, margin: '0 auto' }}>
+          <CornerMark corner="tl" />
+          <CornerMark corner="tr" />
+          <CornerMark corner="bl" />
+          <CornerMark corner="br" />
+          <div style={{
+            border: `1px solid rgba(200,155,60,0.5)`, padding: '56px 6vw',
+            textAlign: 'center',
+          }}>
+            <div style={{ fontSize: '2.8rem', marginBottom: 16 }}>🕌</div>
+            <h1 style={{
+              fontFamily: "'Fraunces', serif", color: COLORS.sand,
+              fontSize: 'clamp(2.2rem, 5vw, 3.4rem)', fontWeight: 700, marginBottom: 16,
+            }}>{t.religion.title}</h1>
+            <p style={{ color: 'rgba(246,241,228,0.8)', fontSize: '1.1rem', maxWidth: 620, margin: '0 auto', lineHeight: 1.7 }}>
+              {t.religion.subtitle}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Pillars — alternating image/text rows */}
+      <section className="section">
         <div className="container">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '56px' }}>
             {pillars.map((pillar, i) => (
               <div
                 key={i}
                 style={{
                   display: 'grid',
                   gridTemplateColumns: '1fr 1fr',
-                  gap: '48px',
-                  alignItems: 'center',
+                  gap: '0',
+                  alignItems: 'stretch',
                   background: 'white',
-                  borderRadius: '24px',
+                  border: `1px solid #E2D9C8`,
                   overflow: 'hidden',
-                  boxShadow: '0 4px 12px rgba(15,76,58,0.08)',
-                  transition: 'all 0.4s',
+                  cursor: 'pointer',
+                  transition: 'box-shadow 0.3s',
                   ...(i % 2 === 1 ? { direction: 'rtl' } : {}),
                 }}
-                className="pillar-card"
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = '0 24px 64px rgba(15,76,58,0.16)'
-                  e.currentTarget.style.transform = 'translateY(-4px)'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(15,76,58,0.08)'
-                  e.currentTarget.style.transform = 'translateY(0)'
-                }}
-                
-                   onClick={() => {
-  if (i === 0) navigate('/diinta/towxiid')   // Card 1: Towxiid
-  if (i === 1) navigate('/diinta/salaadda')  // Card 2: Salaadda
-  if (i === 2) navigate('/diinta/soonka')     // Card 3: Soonka
-  if (i === 3) navigate('/diinta/zakada')       // Card 4: Zakada
-  if (i === 4) navigate('/diinta/xaj')          // Card 5: Xaj
-}}
-
+                onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 16px 40px rgba(18,33,27,0.12)' }}
+                onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'none' }}
+                onClick={() => navigate(paths[i])}
               >
-                <div style={{
-                  height: '320px',
-                  background: pillar.gradient,
-                  position: 'relative',
-                  overflow: 'hidden',
-                }}>
+                <div style={{ height: '320px', position: 'relative', overflow: 'hidden' }}>
                   <img
                     src={pillar.image}
                     alt={pillar.title}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      opacity: 0.8,
-                    }}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                   <div style={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    fontSize: '5rem',
-                    filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.3))',
+                    position: 'absolute', inset: 0,
+                    background: 'linear-gradient(135deg, rgba(6,37,28,0.55), rgba(6,37,28,0.1))',
+                  }} />
+                  <div style={{
+                    position: 'absolute', top: '50%', left: '50%',
+                    transform: 'translate(-50%, -50%)', fontSize: '4.5rem',
+                    filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.4))',
                   }}>
                     {pillar.icon}
                   </div>
                 </div>
                 <div style={{ padding: '48px', direction: 'ltr' }}>
                   <div style={{
-                    display: 'inline-block',
-                    padding: '6px 16px',
-                    borderRadius: '50px',
-                    background: '#E8F5F0',
-                    color: '#0F4C3A',
-                    fontSize: '0.8rem',
-                    fontWeight: 600,
-                    marginBottom: '16px',
+                    fontFamily: "'Fraunces', serif", color: COLORS.gold,
+                    fontSize: '0.95rem', fontWeight: 600, marginBottom: '16px',
                   }}>
-                    {i + 1} / {pillars.length}
+                    {String(i + 1).padStart(2, '0')} / {String(pillars.length).padStart(2, '0')}
                   </div>
                   <h2 style={{
-                    fontSize: '2rem',
-                    fontWeight: 700,
-                    color: '#0F4C3A',
-                    marginBottom: '16px',
+                    fontFamily: "'Fraunces', serif", fontSize: '2rem', fontWeight: 700,
+                    color: COLORS.ink, marginBottom: '16px',
                   }}>
                     {pillar.title}
                   </h2>
-                  <p style={{
-                    color: '#525C57',
-                    fontSize: '1.05rem',
-                    lineHeight: 1.8,
-                  }}>
+                  <p style={{ color: COLORS.slate, fontSize: '1.02rem', lineHeight: 1.8 }}>
                     {pillar.desc}
                   </p>
                 </div>

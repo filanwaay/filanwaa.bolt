@@ -1,6 +1,9 @@
 import { useLanguage } from '../i18n/LanguageContext'
 import { SubscribeSection } from '../components/SubscribeSection'
 import { AdBanner } from '../components/AdBanner'
+import { PageHero } from '../components/PageHero'
+
+const COLORS = { gold: '#C89B3C', sand: '#F6F1E4', ink: '#12211B', slate: '#4A554E' }
 
 export function StoryPage() {
   const { lang } = useLanguage()
@@ -94,44 +97,22 @@ export function StoryPage() {
 
   const c = content[lang]
 
-  return (
-    <div style={{ paddingTop: '72px' }}>
-      <section style={{
-        padding: '80px 0',
-        background: 'linear-gradient(135deg, #3E4642 0%, #1A1D1B 100%)',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-        <div className="container" style={{ position: 'relative', textAlign: 'center' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '20px' }}>📖</div>
-          <h1 style={{
-            color: 'white',
-            fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-            fontWeight: 800,
-            marginBottom: '16px',
-            lineHeight: 1.2,
-          }}>
-            {lang === 'so' ? 'Qisadii Cassie' : lang === 'ar' ? 'قصة كاسي' : 'The Story of Cassie'}
-          </h1>
-          <p style={{
-            color: 'rgba(255,255,255,0.8)',
-            fontSize: '1.2rem',
-            maxWidth: '700px',
-            margin: '0 auto',
-            lineHeight: 1.6,
-            fontStyle: 'italic',
-          }}>
-            {c.intro}
-          </p>
-        </div>
-      </section>
+  const titles = {
+    so: 'Qisadii Cassie',
+    en: 'The Story of Cassie',
+    ar: 'قصة كاسي',
+  }[lang as 'so' | 'en' | 'ar']
 
-      <section className="section" style={{ background: 'white' }}>
+  return (
+    <div style={{ background: COLORS.sand }}>
+      <PageHero icon="📖" title={titles} subtitle={c.intro} />
+
+      <section className="section">
         <div className="container">
-          <div style={{ maxWidth: '760px', margin: '0 auto' }}>
+          <div style={{ maxWidth: '760px', margin: '0 auto', background: 'white', padding: '48px', border: '1px solid #E2D9C8' }}>
             {c.paragraphs.map((p, i) => (
               <p key={i} style={{
-                color: '#3A3F3C',
+                color: COLORS.slate,
                 fontSize: '1.05rem',
                 lineHeight: 1.9,
                 marginBottom: '22px',
@@ -142,11 +123,10 @@ export function StoryPage() {
             <div style={{
               marginTop: '40px',
               padding: '24px 28px',
-              background: '#F8FAF9',
-              borderRadius: '12px',
-              borderLeft: '4px solid #E8B14B',
+              background: COLORS.sand,
+              borderLeft: `3px solid ${COLORS.gold}`,
             }}>
-              <p style={{ color: '#525C57', fontSize: '0.95rem', lineHeight: 1.7, fontStyle: 'italic' }}>
+              <p style={{ color: COLORS.slate, fontSize: '0.95rem', lineHeight: 1.7, fontStyle: 'italic' }}>
                 {c.closingNote}
               </p>
             </div>

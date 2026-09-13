@@ -3,104 +3,105 @@ import { useLanguage } from '../i18n/LanguageContext'
 import { SubscribeSection } from '../components/SubscribeSection'
 import { AdBanner } from '../components/AdBanner'
 
+const COLORS = {
+  deep: '#0B3D2E', deepDark: '#06251C', gold: '#C89B3C',
+  goldLight: '#E8C468', terracotta: '#B5622E', sand: '#F6F1E4',
+  ink: '#12211B', slate: '#4A554E',
+}
+
+function CornerMark({ corner }: { corner: 'tl' | 'tr' | 'bl' | 'br' }) {
+  const pos: Record<string, React.CSSProperties> = {
+    tl: { top: -1, left: -1, borderTop: `2px solid ${COLORS.gold}`, borderLeft: `2px solid ${COLORS.gold}` },
+    tr: { top: -1, right: -1, borderTop: `2px solid ${COLORS.gold}`, borderRight: `2px solid ${COLORS.gold}` },
+    bl: { bottom: -1, left: -1, borderBottom: `2px solid ${COLORS.gold}`, borderLeft: `2px solid ${COLORS.gold}` },
+    br: { bottom: -1, right: -1, borderBottom: `2px solid ${COLORS.gold}`, borderRight: `2px solid ${COLORS.gold}` },
+  }
+  return <span aria-hidden="true" style={{ position: 'absolute', width: 24, height: 24, zIndex: 5, ...pos[corner] }} />
+}
+
 export function CulturePage() {
   const { t, lang } = useLanguage()
   const navigate = useNavigate()
 
- const topics = [
-  {
-    title: t.culture.proverbs,
-    desc: t.culture.proverbsDesc,
-    icon: '💬',
-    gradient: 'linear-gradient(135deg, #7C5817, #E8B14B)',
-    image: 'https://images.pexels.com/photos/2034335/pexels-photo-2034335.jpeg?auto=compress&cs=tinysrgb&w=800',
-  },
-  {
-    title: t.culture.wisdom,
-    desc: t.culture.wisdomDesc,
-    icon: '🧠',
-    gradient: 'linear-gradient(135deg, #0F4C3A, #2E8B5C)',
-    image: 'https://images.pexels.com/photos/1025469/pexels-photo-1025469.jpeg?auto=compress&cs=tinysrgb&w=800',
-  },
-  {
-    title: t.culture.poetry,
-    desc: t.culture.poetryDesc,
-    icon: '📜',
-    gradient: 'linear-gradient(135deg, #3E4642, #6B7872)',
-    image: 'https://images.pexels.com/photos/1762821/pexels-photo-1762821.jpeg?auto=compress&cs=tinysrgb&w=800',
-  },
-  {
-    title: t.culture.songs,
-    desc: t.culture.songsDesc,
-    icon: '🎵',
-    gradient: 'linear-gradient(135deg, #A8781F, #E8B14B)',
-    image: 'https://images.pexels.com/photos/4754019/pexels-photo-4754019.jpeg?auto=compress&cs=tinysrgb&w=800',
-  },
-  {
-    title: lang === 'so' ? 'Sheekooyinka' : lang === 'ar' ? 'القصص' : 'Stories',
-    desc: lang === 'so' ? 'Sheekooyin dhab ah oo taaban, oo ka hadlaya nolosha iyo badalka.' : lang === 'ar' ? 'قصص واقعية مؤثرة تتحدث عن الحياة والتغيير.' : 'Real, moving stories about life and transformation.',
-    icon: '📖',
-    gradient: 'linear-gradient(135deg, #3E4642, #1A1D1B)',
-    image: 'https://images.pexels.com/photos/1907785/pexels-photo-1907785.jpeg?auto=compress&cs=tinysrgb&w=800',
-  },
-  {
-    title: lang === 'so' ? 'Baro Dalkaada' : lang === 'ar' ? 'تعرف على بلدك' : 'Learn Your Country',
-    desc: lang === 'so' ? 'Gobollada Soomaaliya iyo degmooyinka ka tirsan — aqoonso dhulkaaga.' : lang === 'ar' ? 'مناطق الصومال ومقاطعاتها.' : "Somalia's regions and their districts.",
-    icon: '🇸🇴',
-    gradient: 'linear-gradient(135deg, #0F4C3A, #7C5817)',
-    image: 'https://images.pexels.com/photos/2265876/pexels-photo-2265876.jpeg?auto=compress&cs=tinysrgb&w=800',
-  },
-]
+  const topics = [
+    {
+      title: t.culture.proverbs,
+      desc: t.culture.proverbsDesc,
+      icon: '💬',
+      image: 'https://images.pexels.com/photos/2034335/pexels-photo-2034335.jpeg?auto=compress&cs=tinysrgb&w=800',
+      path: '/maahmaah',
+    },
+    {
+      title: t.culture.wisdom,
+      desc: t.culture.wisdomDesc,
+      icon: '🧠',
+      image: 'https://images.pexels.com/photos/1025469/pexels-photo-1025469.jpeg?auto=compress&cs=tinysrgb&w=800',
+      path: '/xikmad',
+    },
+    {
+      title: t.culture.poetry,
+      desc: t.culture.poetryDesc,
+      icon: '📜',
+      image: 'https://images.pexels.com/photos/1762821/pexels-photo-1762821.jpeg?auto=compress&cs=tinysrgb&w=800',
+      path: '/gabayo',
+    },
+    {
+      title: t.culture.songs,
+      desc: t.culture.songsDesc,
+      icon: '🎵',
+      image: 'https://images.pexels.com/photos/4754019/pexels-photo-4754019.jpeg?auto=compress&cs=tinysrgb&w=800',
+      path: '/heeso',
+    },
+    {
+      title: lang === 'so' ? 'Sheekooyinka' : lang === 'ar' ? 'القصص' : 'Stories',
+      desc: lang === 'so' ? 'Sheekooyin dhab ah oo taaban, oo ka hadlaya nolosha iyo badalka.' : lang === 'ar' ? 'قصص واقعية مؤثرة تتحدث عن الحياة والتغيير.' : 'Real, moving stories about life and transformation.',
+      icon: '📖',
+      image: 'https://images.pexels.com/photos/1907785/pexels-photo-1907785.jpeg?auto=compress&cs=tinysrgb&w=800',
+      path: '/sheeko',
+    },
+    {
+      title: lang === 'so' ? 'Baro Dalkaada' : lang === 'ar' ? 'تعرف على بلدك' : 'Learn Your Country',
+      desc: lang === 'so' ? 'Gobollada Soomaaliya iyo degmooyinka ka tirsan — aqoonso dhulkaaga.' : lang === 'ar' ? 'مناطق الصومال ومقاطعاتها.' : "Somalia's regions and their districts.",
+      icon: '🇸🇴',
+      image: 'https://images.pexels.com/photos/2265876/pexels-photo-2265876.jpeg?auto=compress&cs=tinysrgb&w=800',
+      path: '/baro-dalkaaga',
+    },
+  ]
 
   return (
-    <div style={{ paddingTop: '72px' }}>
-      {/* Hero */}
-      <section style={{
-        padding: '80px 0',
-        background: 'linear-gradient(135deg, #7C5817 0%, #2A1D08 100%)',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-        <div style={{
-          position: 'absolute',
-          top: '-30%',
-          right: '-10%',
-          width: '500px',
-          height: '500px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(232,177,75,0.2) 0%, transparent 70%)',
-          pointerEvents: 'none',
-        }} />
-        <div className="container" style={{ position: 'relative', textAlign: 'center' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '20px' }}>📜</div>
-          <h1 style={{
-            color: 'white',
-            fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-            fontWeight: 800,
-            marginBottom: '16px',
-            lineHeight: 1.2,
+    <div style={{ background: COLORS.sand }}>
+      {/* Hero, framed like the homepage */}
+      <div style={{ background: COLORS.ink, padding: '28px 6vw' }}>
+        <div style={{ position: 'relative', maxWidth: 1400, margin: '0 auto' }}>
+          <CornerMark corner="tl" />
+          <CornerMark corner="tr" />
+          <CornerMark corner="bl" />
+          <CornerMark corner="br" />
+          <div style={{
+            border: `1px solid rgba(200,155,60,0.5)`, padding: '56px 6vw',
+            textAlign: 'center',
           }}>
-            {t.culture.title}
-          </h1>
-          <p style={{
-            color: 'rgba(255,255,255,0.8)',
-            fontSize: '1.2rem',
-            maxWidth: '700px',
-            margin: '0 auto',
-            lineHeight: 1.6,
-          }}>
-            {t.culture.subtitle}
-          </p>
+            <div style={{ fontSize: '2.8rem', marginBottom: 16 }}>📜</div>
+            <h1 style={{
+              fontFamily: "'Fraunces', serif", color: COLORS.sand,
+              fontSize: 'clamp(2.2rem, 5vw, 3.4rem)', fontWeight: 700, marginBottom: 16,
+            }}>{t.culture.title}</h1>
+            <p style={{ color: 'rgba(246,241,228,0.8)', fontSize: '1.1rem', maxWidth: 620, margin: '0 auto', lineHeight: 1.7 }}>
+              {t.culture.subtitle}
+            </p>
+          </div>
         </div>
-      </section>
+      </div>
 
-      {/* Topics */}
-      <section className="section" style={{ background: '#F8FAF9' }}>
+      {/* Topics grid */}
+      <section className="section">
         <div className="container">
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(2, 1fr)',
-            gap: '32px',
+            gap: '1px',
+            background: '#E2D9C8',
+            border: '1px solid #E2D9C8',
           }}
             className="culture-grid"
           >
@@ -108,72 +109,45 @@ export function CulturePage() {
               <div
                 key={i}
                 style={{
-                  borderRadius: '24px',
-                  overflow: 'hidden',
                   background: 'white',
-                  boxShadow: '0 4px 12px rgba(15,76,58,0.08)',
-                  transition: 'all 0.4s',
-                  animation: `fadeInUp 0.6s ease-out ${i * 0.1}s both`,
-                  cursor: (i === 0 || i === 1) ? 'pointer' : 'default',
+                  cursor: 'pointer',
+                  transition: 'background 0.25s',
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-8px)'
-                  e.currentTarget.style.boxShadow = '0 24px 64px rgba(15,76,58,0.16)'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)'
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(15,76,58,0.08)'
-                }}
-                onClick={() => {
-                   if (i === 0) navigate('/maahmaah')
-                   if (i === 1) navigate('/xikmad')
-                   if (i === 2) navigate('/gabayo')
-                   if (i === 3) navigate('/heeso')
-                   if (i === 4) navigate('/sheeko')
-                   if (i === 5) navigate('/baro-dalkaaga')
-                }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = COLORS.sand }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'white' }}
+                onClick={() => navigate(topic.path)}
               >
-                <div style={{
-                  height: '200px',
-                  background: topic.gradient,
-                  position: 'relative',
-                  overflow: 'hidden',
-                }}>
+                <div style={{ height: '200px', position: 'relative', overflow: 'hidden' }}>
                   <img
                     src={topic.image}
                     alt={topic.title}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      opacity: 0.7,
-                    }}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                   <div style={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    fontSize: '4rem',
-                    filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.3))',
+                    position: 'absolute', inset: 0,
+                    background: 'linear-gradient(135deg, rgba(6,37,28,0.5), rgba(6,37,28,0.1))',
+                  }} />
+                  <div style={{
+                    position: 'absolute', top: '50%', left: '50%',
+                    transform: 'translate(-50%, -50%)', fontSize: '3.5rem',
+                    filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.4))',
                   }}>
                     {topic.icon}
                   </div>
+                  <span style={{
+                    position: 'absolute', top: 14, right: 16,
+                    fontFamily: "'Fraunces', serif", fontSize: '0.85rem',
+                    color: COLORS.goldLight, fontWeight: 700,
+                  }}>{String(i + 1).padStart(2, '0')}</span>
                 </div>
-                <div style={{ padding: '32px' }}>
+                <div style={{ padding: '28px 32px' }}>
                   <h3 style={{
-                    fontSize: '1.5rem',
-                    fontWeight: 700,
-                    color: '#0F4C3A',
-                    marginBottom: '12px',
+                    fontFamily: "'Fraunces', serif", fontSize: '1.4rem', fontWeight: 700,
+                    color: COLORS.ink, marginBottom: '10px',
                   }}>
                     {topic.title}
                   </h3>
-                  <p style={{
-                    color: '#525C57',
-                    fontSize: '0.95rem',
-                    lineHeight: 1.7,
-                  }}>
+                  <p style={{ color: COLORS.slate, fontSize: '0.92rem', lineHeight: 1.65 }}>
                     {topic.desc}
                   </p>
                 </div>
@@ -185,6 +159,12 @@ export function CulturePage() {
 
       <AdBanner />
       <SubscribeSection />
+
+      <style>{`
+        @media (max-width: 700px) {
+          .culture-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </div>
   )
 }

@@ -1,6 +1,9 @@
 import { useLanguage } from '../i18n/LanguageContext'
 import { SubscribeSection } from '../components/SubscribeSection'
 import { AdBanner } from '../components/AdBanner'
+import { PageHero } from '../components/PageHero'
+
+const COLORS = { gold: '#C89B3C', sand: '#F6F1E4', ink: '#12211B', slate: '#4A554E' }
 
 export function GabayoPage() {
   const { lang } = useLanguage()
@@ -431,33 +434,25 @@ Aabowda uun bay hayaan kii arsaa'ilaye`,
   const l = labels[lang]
 
   return (
-    <div style={{ paddingTop: '72px' }}>
-      <section style={{ padding: '80px 0', background: 'linear-gradient(135deg, #3E4642 0%, #1A1D1B 100%)', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: '-30%', left: '-10%', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(232,177,75,0.15) 0%, transparent 70%)', pointerEvents: 'none' }}></div>
-        <div className="container" style={{ position: 'relative', textAlign: 'center' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '20px' }}>📜</div>
-          <h1 style={{ color: 'white', fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 800, marginBottom: '16px', lineHeight: 1.2 }}>{l.title}</h1>
-          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.2rem', maxWidth: '700px', margin: '0 auto', lineHeight: 1.6 }}>{l.subtitle}</p>
-        </div>
-      </section>
+    <div style={{ background: COLORS.sand }}>
+      <PageHero icon="📜" title={l.title} subtitle={l.subtitle} />
 
-      <section className="section" style={{ background: '#F8FAF9' }}>
+      <section className="section">
         <div className="container">
-          <div style={{ maxWidth: '800px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '32px' }}>
+          <div style={{ maxWidth: '800px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1px', background: '#E2D9C8', border: '1px solid #E2D9C8' }}>
             {poems.map((poem, i) => (
               <div key={i} style={{
                 background: 'white',
-                borderRadius: '24px',
                 padding: '40px',
-                boxShadow: '0 4px 12px rgba(15,76,58,0.08)',
+                borderLeft: `3px solid ${COLORS.gold}`,
               }}>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#0F4C3A', marginBottom: '4px' }}>
+                <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: '1.5rem', fontWeight: 700, color: COLORS.ink, marginBottom: '4px' }}>
                   {poem.title}
                 </h2>
-                <p style={{ color: '#8A7A3F', fontSize: '0.9rem', fontWeight: 600, marginBottom: '20px' }}>
+                <p style={{ color: COLORS.gold, fontSize: '0.9rem', fontWeight: 600, marginBottom: '20px' }}>
                   {l.by}: {poem.poet}
                 </p>
-                <p style={{ color: '#525C57', fontSize: '1rem', lineHeight: 2, whiteSpace: 'pre-line' }}>
+                <p style={{ color: COLORS.slate, fontSize: '1rem', lineHeight: 2, whiteSpace: 'pre-line' }}>
                   {poem.text}
                 </p>
               </div>

@@ -1,6 +1,10 @@
 import { useLanguage } from '../i18n/LanguageContext'
 import { SubscribeSection } from '../components/SubscribeSection'
 import { AdBanner } from '../components/AdBanner'
+import { PageHero } from '../components/PageHero'
+
+const COLORS = { gold: '#C89B3C', sand: '#F6F1E4', ink: '#12211B', slate: '#4A554E' }
+
 export function ProverbsPage() {
   const { lang } = useLanguage()
 
@@ -185,84 +189,50 @@ export function ProverbsPage() {
     ]},
   ]
 
-  return (
-    <div style={{ paddingTop: '72px' }}>
-      <section style={{
-        padding: '80px 0',
-        background: 'linear-gradient(135deg, #7C5817 0%, #2A1D08 100%)',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-        <div style={{
-          position: 'absolute',
-          top: '-30%',
-          right: '-10%',
-          width: '500px',
-          height: '500px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(232,177,75,0.2) 0%, transparent 70%)',
-          pointerEvents: 'none',
-        }} />
-        <div className="container" style={{ position: 'relative', textAlign: 'center' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '20px' }}>💬</div>
-          <h1 style={{
-            color: 'white',
-            fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-            fontWeight: 800,
-            marginBottom: '16px',
-            lineHeight: 1.2,
-          }}>
-            {lang === 'so' ? 'Maahmaahyada Soomaaliyeed' : lang === 'ar' ? 'الأمثال الصومالية' : 'Somali Proverbs'}
-          </h1>
-          <p style={{
-            color: 'rgba(255,255,255,0.8)',
-            fontSize: '1.2rem',
-            maxWidth: '700px',
-            margin: '0 auto',
-            lineHeight: 1.6,
-          }}>
-            {lang === 'so'
-              ? 'Xigmad ka dhalatay khibrad qarniyo ah oo Soomaaliyeed, kala saaran xarfaha.'
-              : lang === 'ar'
-              ? 'حكمة وُلدت من تجربة صومالية عمرها قرون، مرتبة حسب الحروف.'
-              : 'Wisdom born from centuries of Somali lived experience, organized alphabetically.'}
-          </p>
-        </div>
-      </section>
+  const titles = {
+    so: { title: 'Maahmaahyada Soomaaliyeed', sub: 'Xigmad ka dhalatay khibrad qarniyo ah oo Soomaaliyeed, kala saaran xarfaha.' },
+    en: { title: 'Somali Proverbs', sub: 'Wisdom born from centuries of Somali lived experience, organized alphabetically.' },
+    ar: { title: 'الأمثال الصومالية', sub: 'حكمة وُلدت من تجربة صومالية عمرها قرون، مرتبة حسب الحروف.' },
+  }[lang as 'so' | 'en' | 'ar']
 
-      <section className="section" style={{ background: 'white' }}>
+  return (
+    <div style={{ background: COLORS.sand }}>
+      <PageHero icon="💬" title={titles.title} subtitle={titles.sub} />
+
+      <section className="section">
         <div className="container">
           {proverbGroups.map((group, gi) => (
             <div key={gi} style={{ marginBottom: '40px' }}>
               <h3 style={{
-                fontSize: '1.4rem',
+                fontFamily: "'Fraunces', serif",
+                fontSize: '1.5rem',
                 fontWeight: 700,
-                color: '#E8B14B',
+                color: COLORS.gold,
                 marginBottom: '16px',
-                borderBottom: '2px solid #E8B14B',
+                borderBottom: `2px solid ${COLORS.gold}`,
                 paddingBottom: '8px',
                 display: 'inline-block',
               }}>
                 {group.letter}
               </h3>
-              <div style={{ display: 'grid', gap: '16px' }}>
+              <div style={{ display: 'grid', gap: '1px', background: '#E2D9C8', border: '1px solid #E2D9C8' }}>
                 {group.items.map((item, ii) => (
                   <div key={ii} style={{
-                    background: '#F8FAF9',
-                    borderRadius: '12px',
+                    background: 'white',
                     padding: '20px 24px',
-                    borderLeft: '4px solid #0F4C3A',
+                    borderLeft: `3px solid ${COLORS.gold}`,
                   }}>
                     <p style={{
+                      fontFamily: "'Fraunces', serif",
                       fontSize: '1.05rem',
-                      fontWeight: 700,
-                      color: '#0F4C3A',
+                      fontWeight: 600,
+                      color: COLORS.ink,
                       marginBottom: lang === 'so' ? 0 : '8px',
                     }}>
                       {item.so}
                     </p>
                     {lang !== 'so' && (
-                      <p style={{ color: '#525C57', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                      <p style={{ color: COLORS.slate, fontSize: '0.95rem', lineHeight: 1.6 }}>
                         {lang === 'ar' ? item.ar : item.en}
                       </p>
                     )}
