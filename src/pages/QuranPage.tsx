@@ -1,7 +1,10 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { useLanguage } from '../i18n/LanguageContext'
 import { SubscribeSection } from '../components/SubscribeSection'
 import { AdBanner } from '../components/AdBanner'
+import { PageHero } from '../components/PageHero'
+
+const COLORS = { gold: '#C89B3C', goldLight: '#E8C468', sand: '#F6F1E4', ink: '#12211B', deep: '#0B3D2E', deepDark: '#06251C', slate: '#4A554E' }
 
 interface Surah {
   number: number
@@ -128,11 +131,21 @@ const SURAHS: Surah[] = [
 ]
 
 const RECITERS = [
-  { id: 'afs', name: 'Mishary Rashid Alafasy', arabicName: 'مشاري راشد العفاسي', server: 'https://server8.mp3quran.net/afs/' },
-  { id: 'sds', name: 'Abdurrahmaan As-Sudais', arabicName: 'عبد الرحمن السديس', server: 'https://server11.mp3quran.net/sds/' },
-  { id: 'maher', name: 'Maher Al Muaiqly', arabicName: 'ماهر المعيقلي', server: 'https://server12.mp3quran.net/maher/' },
-  { id: 'abdulbasit', name: 'Abdul Basit (Murattal)', arabicName: 'عبد الباسط (مرتل)', server: 'https://server7.mp3quran.net/basit/' },
+  { id: 'afs', name: 'Mishary Rashid Alafasy', server: 'https://server8.mp3quran.net/afs/' },
+  { id: 'sds', name: 'Abdurrahmaan As-Sudais', server: 'https://server11.mp3quran.net/sds/' },
+  { id: 'maher', name: 'Maher Al Muaiqly', server: 'https://server12.mp3quran.net/maher/' },
+  { id: 'basit', name: 'Abdul Basit (Murattal)', server: 'https://server7.mp3quran.net/basit/' },
+  { id: 'sufi', name: 'Abdul Rashid Ali Sufi (Assosi)', server: 'https://server16.mp3quran.net/download/soufi/Rewayat-Assosi-A-n-Abi-Amr/' },
 ]
+
+const SPEED_OPTIONS = [0.5, 0.75, 1, 1.25, 1.5, 2]
+
+function formatTime(seconds: number): string {
+  if (!isFinite(seconds) || isNaN(seconds) || seconds < 0) return '0:00'
+  const m = Math.floor(seconds / 60)
+  const s = Math.floor(seconds % 60)
+  return `${m}:${s.toString().padStart(2, '0')}`
+}
 
 export function QuranPage() {
   const { t } = useLanguage()
@@ -140,280 +153,339 @@ export function QuranPage() {
   const [selectedReciter, setSelectedReciter] = useState(RECITERS[0])
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [currentTime, setCurrentTime] = useState(0)
+  const [duration, setDuration] = useState(0)
+  const [volume, setVolume] = useState(1)
+  const [speed, setSpeed] = useState(1)
+  const [error, setError] = useState<string | null>(null)
+
   const audioRef = useRef<HTMLAudioElement>(null)
 
   const audioUrl = `${selectedReciter.server}${String(selectedSurah.number).padStart(3, '0')}.mp3`
 
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.pause()
-      audioRef.current.load()
-      setIsPlaying(false)
-    }
+    const audio = audioRef.current
+    if (!audio) return
+    audio.pause()
+    audio.currentTime = 0
+    audio.playbackRate = speed
+    audio.volume = volume
+    setIsPlaying(false)
+    setCurrentTime(0)
+    setDuration(0)
+    setError(null)
+    audio.load()
   }, [selectedSurah, selectedReciter])
 
-  const togglePlay = async () => {
-    if (!audioRef.current) return
+  useEffect(() => {
+    if (audioRef.current) audioRef.current.playbackRate = speed
+  }, [speed])
 
+  useEffect(() => {
+    if (audioRef.current) audioRef.current.volume = volume
+  }, [volume])
+
+  const togglePlay = useCallback(async () => {
+    const audio = audioRef.current
+    if (!audio) return
     if (isPlaying) {
-      audioRef.current.pause()
+      audio.pause()
       setIsPlaying(false)
-    } else {
-      setIsLoading(true)
-      try {
-        await audioRef.current.play()
-        setIsPlaying(true)
-      } catch (err) {
-        console.error('Audio error:', err)
-      }
+      return
+    }
+    setIsLoading(true)
+    setError(null)
+    try {
+      await audio.play()
+      setIsPlaying(true)
+    } catch (err) {
+      console.error('Audio play error:', err)
+      setError('Codka lama furi karo. Fadlan isku day mar kale.')
+      setIsPlaying(false)
+    } finally {
       setIsLoading(false)
     }
-  }
+  }, [isPlaying])
+
+  const handleRewind = useCallback(() => {
+    const audio = audioRef.current
+    if (!audio) return
+    audio.currentTime = Math.max(0, audio.currentTime - 10)
+  }, [])
+
+  const handleForward = useCallback(() => {
+    const audio = audioRef.current
+    if (!audio || !isFinite(audio.duration)) return
+    audio.currentTime = Math.min(audio.duration, audio.currentTime + 10)
+  }, [])
+
+  const handleSeek = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const audio = audioRef.current
+    if (!audio || !isFinite(audio.duration)) return
+    const newTime = (parseFloat(e.target.value) / 100) * audio.duration
+    audio.currentTime = newTime
+    setCurrentTime(newTime)
+  }, [])
+
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio) return
+    const onTime = () => setCurrentTime(audio.currentTime)
+    const onMeta = () => setDuration(audio.duration)
+    const onEnd = () => setIsPlaying(false)
+    const onErr = () => {
+      setError('Codka lama soo dejisan karo. Fadlan hubi internet-kaaga.')
+      setIsPlaying(false)
+    }
+    audio.addEventListener('timeupdate', onTime)
+    audio.addEventListener('loadedmetadata', onMeta)
+    audio.addEventListener('ended', onEnd)
+    audio.addEventListener('error', onErr)
+    return () => {
+      audio.removeEventListener('timeupdate', onTime)
+      audio.removeEventListener('loadedmetadata', onMeta)
+      audio.removeEventListener('ended', onEnd)
+      audio.removeEventListener('error', onErr)
+    }
+  }, [])
+
+  const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0
 
   return (
-    <div style={{ paddingTop: '72px' }}>
-      {/* Hero */}
-      <section style={{
-        padding: '80px 0',
-        background: 'linear-gradient(135deg, #0F4C3A 0%, #082E23 100%)',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-        <div style={{
-          position: 'absolute',
-          top: '-30%',
-          right: '-10%',
-          width: '500px',
-          height: '500px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(232,177,75,0.15) 0%, transparent 70%)',
-          pointerEvents: 'none',
-        }} />
-        <div className="container" style={{ position: 'relative', textAlign: 'center' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '20px' }}>📖</div>
-          <h1 style={{
-            color: 'white',
-            fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-            fontWeight: 800,
-            marginBottom: '16px',
-            lineHeight: 1.2,
-          }}>
-            {t.quran.title}
-          </h1>
-          <p style={{
-            color: 'rgba(255,255,255,0.8)',
-            fontSize: '1.2rem',
-            maxWidth: '700px',
-            margin: '0 auto',
-            lineHeight: 1.6,
-          }}>
-            {t.quran.subtitle}
-          </p>
-        </div>
-      </section>
+    <div style={{ background: COLORS.sand }}>
+      <PageHero icon="📖" title={t.quran.title} subtitle={t.quran.subtitle} />
 
       {/* Player */}
-      <section className="section" style={{ background: '#F8FAF9' }}>
+      <section className="section">
         <div className="container">
           <div style={{
-            maxWidth: '800px',
+            maxWidth: '640px',
             margin: '0 auto',
-            background: 'white',
-            borderRadius: '32px',
+            background: '#302d2f',
             overflow: 'hidden',
-            boxShadow: '0 24px 64px rgba(15,76,58,0.12)',
+            borderRadius: '10px',
+            boxShadow: '0 24px 60px rgba(30, 15, 243, 0.35)',
+            border: '1px solid #08f808',
           }}>
-            {/* Now Playing */}
+            {/* Title bar, like a desktop media player window */}
             <div style={{
-              background: 'linear-gradient(135deg, #0F4C3A, #2E8B5C)',
-              padding: '48px',
-              textAlign: 'center',
-              position: 'relative',
-              overflow: 'hidden',
+              display: 'flex', alignItems: 'center', gap: 8,
+              padding: '10px 16px', background: '#181414',
+              borderBottom: '1px solid #2E332E',
             }}>
-              <div style={{
-                position: 'absolute',
-                top: '-50%',
-                left: '-10%',
-                width: '300px',
-                height: '300px',
-                borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(232,177,75,0.2) 0%, transparent 70%)',
-                pointerEvents: 'none',
-              }} />
-              <div style={{
-                width: '120px',
-                height: '120px',
-                margin: '0 auto 24px',
-                borderRadius: '50%',
-                background: 'rgba(255,255,255,0.1)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '3rem',
-                border: '2px solid rgba(232,177,75,0.3)',
-                position: 'relative',
-              }}>
-                📖
-                {isPlaying && (
-                  <div style={{
-                    position: 'absolute',
-                    inset: '-8px',
-                    borderRadius: '50%',
-                    border: '2px solid rgba(232,177,75,0.5)',
-                    animation: 'pulse 2s ease-in-out infinite',
-                  }} />
-                )}
-              </div>
-              <p style={{
-                fontFamily: 'Amiri, serif',
-                fontSize: '2.5rem',
-                color: '#E8B14B',
-                marginBottom: '8px',
-                fontWeight: 700,
-              }}>
-                {selectedSurah.arabicName}
-              </p>
-              <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '1.1rem' }}>
-                {selectedSurah.name} • {selectedSurah.ayahs} Ayahs
-              </p>
-              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.95rem', marginTop: '8px' }}>
-                {selectedReciter.name}
-              </p>
+              <span style={{ width: 11, height: 11, borderRadius: '50%', background: '#E06456' }} />
+              <span style={{ width: 11, height: 11, borderRadius: '50%', background: COLORS.gold }} />
+              <span style={{ width: 11, height: 11, borderRadius: '50%', background: '#5FA872' }} />
+              <span style={{ color: 'rgba(246,241,228,0.5)', fontSize: '0.78rem', fontWeight: 600, margin: '0 auto', paddingRight: 40 }}>
+                Filanwaa Quran Player
+              </span>
             </div>
 
-            {/* Controls */}
-            <div style={{ padding: '32px 48px' }}>
-              {/* Surah Selector */}
-              <div style={{ marginBottom: '24px' }}>
-                <label style={{
-                  display: 'block',
-                  fontSize: '0.85rem',
-                  fontWeight: 600,
-                  color: '#3E4642',
-                  marginBottom: '10px',
-                }}>
-                  {t.quran.selectSurah}
-                </label>
-                <select
-                  value={selectedSurah.number}
-                  onChange={(e) => {
-                    const surah = SURAHS.find(s => s.number === parseInt(e.target.value))
-                    if (surah) setSelectedSurah(surah)
-                  }}
-                  style={{
-                    width: '100%',
-                    padding: '14px 16px',
-                    borderRadius: '12px',
-                    border: '1px solid #D8DFDB',
-                    background: '#F8FAF9',
-                    fontSize: '1rem',
-                    color: '#1A1F1C',
-                    fontFamily: 'inherit',
-                    cursor: 'pointer',
-                    outline: 'none',
-                    transition: 'all 0.2s',
-                  }}
-                  onFocus={(e) => e.currentTarget.style.borderColor = '#0F4C3A'}
-                  onBlur={(e) => e.currentTarget.style.borderColor = '#D8DFDB'}
-                >
-                  {SURAHS.map((surah) => (
-                    <option key={surah.number} value={surah.number}>
-                      {surah.number}. {surah.name} — {surah.arabicName} ({surah.ayahs})
-                    </option>
-                  ))}
-                </select>
-              </div>
+            {/* Now playing display */}
+            <div style={{ padding: '02px 02px 02px', textAlign: 'center' }}>
+              <p style={{
+                color: 'rgba(231, 192, 91, 0.4)', fontSize: '0.7rem', fontWeight: 700,
+                letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 10,
+              }}>
+                {isPlaying ? 'Hadda Socda' : 'Diyaar'}
+              </p>
+              <h2 style={{
+                fontFamily: 'Amiri, serif', fontSize: '2.4rem', color: COLORS.goldLight,
+                marginBottom: '6px', fontWeight: 700,
+              }}>
+                {selectedSurah.arabicName}
+              </h2>
+              <p style={{ color: COLORS.sand, fontSize: '1.05rem', fontWeight: 600, marginBottom: '4px' }}>
+                {selectedSurah.name} · {selectedSurah.ayahs} Ayahs
+              </p>
+              <p style={{ color: 'rgba(246,241,228,0.45)', fontSize: '0.82rem' }}>
+                {selectedReciter.name}
+              </p>
 
-              {/* Reciter Selector */}
-              <div style={{ marginBottom: '32px' }}>
-                <label style={{
-                  display: 'block',
-                  fontSize: '0.85rem',
-                  fontWeight: 600,
-                  color: '#3E4642',
-                  marginBottom: '10px',
-                }}>
-                  {t.quran.selectReciter}
-                </label>
-                <select
-                  value={selectedReciter.id}
-                  onChange={(e) => {
-                    const reciter = RECITERS.find(r => r.id === e.target.value)
-                    if (reciter) setSelectedReciter(reciter)
-                  }}
-                  style={{
-                    width: '100%',
-                    padding: '14px 16px',
-                    borderRadius: '12px',
-                    border: '1px solid #D8DFDB',
-                    background: '#F8FAF9',
-                    fontSize: '1rem',
-                    color: '#1A1F1C',
-                    fontFamily: 'inherit',
-                    cursor: 'pointer',
-                    outline: 'none',
-                    transition: 'all 0.2s',
-                  }}
-                  onFocus={(e) => e.currentTarget.style.borderColor = '#0F4C3A'}
-                  onBlur={(e) => e.currentTarget.style.borderColor = '#D8DFDB'}
-                >
-                  {RECITERS.map((reciter) => (
-                    <option key={reciter.id} value={reciter.id}>
-                      {reciter.name} — {reciter.arabicName}
-                    </option>
-                  ))}
-                </select>
+              {/* Equalizer-style visualizer */}
+              <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: 3, height: 36, margin: '20px 0 4px' }}>
+                {[0,1,2,3,4,5,6,7,8,9,10,11].map(i => (
+                  <span key={i} style={{
+                    width: 9, borderRadius: 2, background: COLORS.gold,
+                    height: isPlaying ? undefined : 9,
+                    animation: isPlaying ? `eqbar 0.${8 + (i % 5)}s ease-in-out infinite alternate` : 'none',
+                    animationDelay: `${i * 0.07}s`,
+                    opacity: isPlaying ? 0.85 : 0.3,
+                  }} />
+                ))}
               </div>
+            </div>
 
-              {/* Play Button */}
+            {/* Seek bar */}
+            <div style={{ padding: '0 32px 18px' }}>
+              <input
+                type="range"
+                className="audio-slider"
+                min="0"
+                max="100"
+                step="0.1"
+                value={progressPercent}
+                onChange={handleSeek}
+                disabled={duration === 0}
+                style={{ '--progress': `${progressPercent}%` } as React.CSSProperties}
+              />
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: 'rgba(248, 248, 247, 0.5)', marginTop: '6px', fontFamily: 'monospace' }}>
+                <span>{formatTime(currentTime)}</span>
+                <span>-{formatTime(Math.max(0, duration - currentTime))}</span>
+              </div>
+            </div>
+
+            {error && (
+              <div style={{ margin: '0 32px 16px', padding: '10px 14px', borderRadius: '6px', background: 'rgba(224,100,86,0.15)', color: '#E06456', fontSize: '0.85rem', border: '1px solid rgba(224,100,86,0.3)' }}>
+                ⚠️ {error}
+              </div>
+            )}
+
+            {/* Transport controls, VLC-style row */}
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 22,
+              padding: '4px 32px 28px',
+            }}>
+              <button
+                onClick={handleRewind}
+                title="Gadaal 10 il-biriqsi"
+                style={{
+                  width: 50, height: 42, borderRadius: '50%', border: 'none',
+                  background: 'transparent', color: COLORS.sand, fontSize: '1.3rem', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', opacity: 0.75,
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.opacity = '1' }}
+                onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.75' }}
+              >⏪</button>
+
               <button
                 onClick={togglePlay}
                 disabled={isLoading}
                 style={{
-                  width: '100%',
-                  padding: '18px',
-                  borderRadius: '16px',
-                  background: isPlaying
-                    ? 'linear-gradient(135deg, #C0392B, #8E2B1F)'
-                    : 'linear-gradient(135deg, #0F4C3A, #2E8B5C)',
-                  color: 'white',
-                  fontSize: '1.15rem',
-                  fontWeight: 600,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '10px',
-                  transition: 'all 0.3s',
-                  boxShadow: isPlaying
-                    ? '0 12px 32px rgba(192,57,43,0.3)'
-                    : '0 12px 32px rgba(15,76,58,0.3)',
-                  opacity: isLoading ? 0.7 : 1,
+                  width: 66, height: 66, borderRadius: '50%', border: 'none',
+                  background: COLORS.gold, color: '#1B1F1C', fontSize: '1.7rem',
+                  cursor: isLoading ? 'wait' : 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s',
+                  boxShadow: '0 8px 24px rgba(200,155,60,0.4)', opacity: isLoading ? 0.7 : 1,
                 }}
-                onMouseEnter={(e) => {
-                  if (!isLoading) e.currentTarget.style.transform = 'translateY(-2px)'
-                }}
-                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-              >
-                {isLoading ? (
-                  <>⏳ {t.quran.loading}</>
-                ) : isPlaying ? (
-                  <>⏸ {t.quran.pause}</>
-                ) : (
-                  <>▶ {t.quran.play}</>
-                )}
-              </button>
+                onMouseEnter={(e) => { if (!isLoading) e.currentTarget.style.transform = 'scale(1.06)' }}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+              >{isLoading ? '⏳' : isPlaying ? '⏸' : '▶'}</button>
 
-              <audio
-                ref={audioRef}
-                src={audioUrl}
-                onEnded={() => setIsPlaying(false)}
-                style={{ display: 'none' }}
-              />
+              <button
+                onClick={handleForward}
+                title="Hore 10 il-biriqsi"
+                style={{
+                  width: 42, height: 42, borderRadius: '50%', border: 'none',
+                  background: 'transparent', color: COLORS.sand, fontSize: '1.3rem', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', opacity: 0.75,
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.opacity = '1' }}
+                onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.75' }}
+              >⏩</button>
+            </div>
+
+            {/* Bottom console: surah/reciter/speed/volume, like a player's settings tray */}
+            <div style={{ background: '#141816', borderTop: '1px solid #2E332E', padding: '24px 32px 28px' }}>
+              <div style={{ marginBottom: '14px' }}>
+                <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: 'rgba(246,241,228,0.5)', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                  📖 {t.quran.selectSurah}
+                </label>
+                <select
+                  value={selectedSurah.number}
+                  onChange={(e) => {
+                    const s = SURAHS.find(x => x.number === parseInt(e.target.value))
+                    if (s) setSelectedSurah(s)
+                  }}
+                  style={{
+                    width: '100%', padding: '11px 14px', borderRadius: '6px',
+                    border: '1px solid #2E332E', background: '#1B1F1C',
+                    fontSize: '0.92rem', color: COLORS.sand, fontFamily: 'inherit',
+                    cursor: 'pointer', outline: 'none',
+                  }}
+                >
+                  {SURAHS.map(s => (
+                    <option key={s.number} value={s.number}>{s.number}. {s.name} — {s.arabicName}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div style={{ marginBottom: '18px' }}>
+                <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: 'rgba(246,241,228,0.5)', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                  🎙️ {t.quran.selectReciter}
+                </label>
+                <select
+                  value={selectedReciter.id}
+                  onChange={(e) => {
+                    const r = RECITERS.find(x => x.id === e.target.value)
+                    if (r) setSelectedReciter(r)
+                  }}
+                  style={{
+                    width: '100%', padding: '11px 14px', borderRadius: '6px',
+                    border: '1px solid #2E332E', background: '#1B1F1C',
+                    fontSize: '0.92rem', color: COLORS.sand, fontFamily: 'inherit',
+                    cursor: 'pointer', outline: 'none',
+                  }}
+                >
+                  {RECITERS.map(r => (
+                    <option key={r.id} value={r.id}>{r.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
+                <div style={{ flex: '1 1 200px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'rgba(246,241,228,0.5)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>⚡ Xawaaraha</span>
+                    <span style={{ fontSize: '0.72rem', fontWeight: 700, color: COLORS.gold }}>{speed}x</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                    {SPEED_OPTIONS.map(s => (
+                      <button
+                        key={s}
+                        onClick={() => setSpeed(s)}
+                        style={{
+                          flex: '1 1 auto', minWidth: 44, padding: '6px 8px', borderRadius: '4px',
+                          border: speed === s ? `1px solid ${COLORS.gold}` : '1px solid #2E332E',
+                          background: speed === s ? 'rgba(200,155,60,0.15)' : 'transparent',
+                          color: speed === s ? COLORS.gold : 'rgba(246,241,228,0.6)',
+                          fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+                        }}
+                      >{s}x</button>
+                    ))}
+                  </div>
+                </div>
+
+                <div style={{ flex: '1 1 160px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'rgba(246,241,228,0.5)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>🔊 Codka</span>
+                    <span style={{ fontSize: '0.72rem', fontWeight: 700, color: COLORS.gold }}>{Math.round(volume * 100)}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    className="audio-slider"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value={volume}
+                    onChange={(e) => setVolume(parseFloat(e.target.value))}
+                    style={{ '--progress': `${volume * 100}%` } as React.CSSProperties}
+                  />
+                </div>
+              </div>
+
+              <audio ref={audioRef} src={audioUrl} preload="metadata" style={{ display: 'none' }} />
             </div>
           </div>
         </div>
       </section>
+
+      <style>{`
+        @keyframes eqbar {
+          from { height: 4px; }
+          to { height: 34px; }
+        }
+      `}</style>
 
       <AdBanner />
       <SubscribeSection />

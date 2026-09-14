@@ -4,17 +4,17 @@ import { SubscribeSection } from '../components/SubscribeSection'
 import { AdBanner } from '../components/AdBanner'
 
 const COLORS = {
-  deep: '#0B3D2E', deepDark: '#06251C', gold: '#C89B3C',
-  goldLight: '#E8C468', terracotta: '#B5622E', sand: '#F6F1E4',
+  deep: '#0B3D2E', deepDark: '#06251C', gold: '#f0a70b',
+  goldLight: '#E8C468', terracotta: '#B5622E', sand: '#70c7fa',
   ink: '#12211B', slate: '#4A554E',
 }
 
 function CornerMark({ corner }: { corner: 'tl' | 'tr' | 'bl' | 'br' }) {
   const pos: Record<string, React.CSSProperties> = {
-    tl: { top: -1, left: -1, borderTop: `2px solid ${COLORS.gold}`, borderLeft: `2px solid ${COLORS.gold}` },
-    tr: { top: -1, right: -1, borderTop: `2px solid ${COLORS.gold}`, borderRight: `2px solid ${COLORS.gold}` },
-    bl: { bottom: -1, left: -1, borderBottom: `2px solid ${COLORS.gold}`, borderLeft: `2px solid ${COLORS.gold}` },
-    br: { bottom: -1, right: -1, borderBottom: `2px solid ${COLORS.gold}`, borderRight: `2px solid ${COLORS.gold}` },
+    tl: { top: -1, left: -1, borderTop: `8px solid ${COLORS.gold}`, borderLeft: `8px solid ${COLORS.gold}` },
+    tr: { top: -1, right: -1, borderTop: `8px solid ${COLORS.gold}`, borderRight: `8px solid ${COLORS.gold}` },
+    bl: { bottom: -1, left: -1, borderBottom: `8px solid ${COLORS.gold}`, borderLeft: `8px solid ${COLORS.gold}` },
+    br: { bottom: -1, right: -1, borderBottom: `8px solid ${COLORS.gold}`, borderRight: `8px solid ${COLORS.gold}` },
   }
   return <span aria-hidden="true" style={{ position: 'absolute', width: 24, height: 24, zIndex: 5, ...pos[corner] }} />
 }

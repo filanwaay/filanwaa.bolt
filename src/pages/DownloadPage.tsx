@@ -1,6 +1,9 @@
 import { useLanguage } from '../i18n/LanguageContext'
 import { SubscribeSection } from '../components/SubscribeSection'
 import { AdBanner } from '../components/AdBanner'
+import { PageHero } from '../components/PageHero'
+
+const COLORS = { deep: '#0B3D2E', gold: '#C89B3C', sand: '#F6F1E4', ink: '#12211B', terracotta: '#B5622E', slate: '#4A554E' }
 
 export function DownloadPage() {
   const { lang } = useLanguage()
@@ -84,75 +87,50 @@ export function DownloadPage() {
   const l = labels[lang]
 
   return (
-    <div style={{ paddingTop: '72px' }}>
-      <section style={{ padding: '80px 0', background: 'linear-gradient(135deg, #1A1F1C 0%, #051F18 100%)', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: '-30%', left: '-10%', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(68,121,161,0.2) 0%, transparent 70%)', pointerEvents: 'none' }}></div>
-        <div className="container" style={{ position: 'relative', textAlign: 'center' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '20px' }}>⬇️</div>
-          <h1 style={{ color: 'white', fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 800, marginBottom: '16px', lineHeight: 1.2 }}>{l.title}</h1>
-          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.2rem', maxWidth: '700px', margin: '0 auto', lineHeight: 1.6 }}>{l.subtitle}</p>
-        </div>
-      </section>
+    <div style={{ background: COLORS.sand }}>
+      <PageHero icon="⬇️" title={l.title} subtitle={l.subtitle} />
 
-      <section className="section" style={{ background: '#F8FAF9' }}>
+      <section className="section">
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
             {items.map((item, i) => (
               <div
                 key={i}
                 style={{
                   background: 'white',
-                  borderRadius: '16px',
-                  padding: '28px',
-                  boxShadow: '0 4px 12px rgba(15,76,58,0.08)',
-                  transition: 'all 0.3s',
+                  padding: '26px',
+                  borderLeft: `3px solid ${COLORS.gold}`,
+                  boxShadow: '0 2px 8px rgba(18,33,27,0.05)',
+                  transition: 'transform 0.2s, box-shadow 0.2s',
                   display: 'flex',
                   flexDirection: 'column',
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = '0 12px 32px rgba(15,76,58,0.14)'
-                  e.currentTarget.style.transform = 'translateY(-4px)'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(15,76,58,0.08)'
-                  e.currentTarget.style.transform = 'translateY(0)'
-                }}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 12px 26px rgba(18,33,27,0.12)' }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(18,33,27,0.05)' }}
               >
-                <div style={{ fontSize: '2.5rem', marginBottom: '12px' }}>{item.icon}</div>
-                <div style={{
-                  display: 'inline-block',
-                  padding: '4px 12px',
-                  borderRadius: '50px',
-                  background: '#E8F5F0',
-                  color: '#0F4C3A',
-                  fontSize: '0.75rem',
-                  fontWeight: 600,
-                  marginBottom: '12px',
-                  alignSelf: 'flex-start',
-                }}>
-                  {item.category}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
+                  <span style={{ fontSize: '2.2rem' }}>{item.icon}</span>
+                  <span style={{
+                    fontSize: '0.7rem', color: COLORS.terracotta, fontWeight: 700,
+                    background: 'rgba(181,98,46,0.08)', padding: '3px 10px', borderRadius: 20,
+                  }}>{item.category}</span>
                 </div>
-                <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#0F4C3A', marginBottom: '8px' }}>
+                <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: '1.15rem', fontWeight: 700, color: COLORS.ink, marginBottom: '8px' }}>
                   {item.name}
                 </h2>
-                <p style={{ color: '#525C57', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '20px', flex: 1 }}>
+                <p style={{ color: COLORS.slate, fontSize: '0.9rem', lineHeight: 1.6, marginBottom: '20px', flex: 1 }}>
                   {item.desc}
                 </p>
-                
-                 <a href={item.link}
+                <a href={item.link}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
-                    display: 'inline-block',
-                    textAlign: 'center',
-                    padding: '10px 20px',
-                    borderRadius: '8px',
-                    background: '#4479A1',
-                    color: 'white',
-                    fontWeight: 600,
-                    fontSize: '0.9rem',
-                    textDecoration: 'none',
+                    display: 'inline-block', textAlign: 'center', padding: '10px 20px',
+                    background: COLORS.deep, color: 'white', fontWeight: 700, fontSize: '0.88rem',
+                    textDecoration: 'none', transition: 'background 0.2s',
                   }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = COLORS.gold }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = COLORS.deep }}
                 >
                   {l.download}
                 </a>

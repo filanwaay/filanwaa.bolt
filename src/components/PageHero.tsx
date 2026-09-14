@@ -4,10 +4,10 @@ const COLORS = {
 
 function CornerMark({ corner }: { corner: 'tl' | 'tr' | 'bl' | 'br' }) {
   const pos: Record<string, React.CSSProperties> = {
-    tl: { top: -1, left: -1, borderTop: `2px solid ${COLORS.gold}`, borderLeft: `2px solid ${COLORS.gold}` },
-    tr: { top: -1, right: -1, borderTop: `2px solid ${COLORS.gold}`, borderRight: `2px solid ${COLORS.gold}` },
-    bl: { bottom: -1, left: -1, borderBottom: `2px solid ${COLORS.gold}`, borderLeft: `2px solid ${COLORS.gold}` },
-    br: { bottom: -1, right: -1, borderBottom: `2px solid ${COLORS.gold}`, borderRight: `2px solid ${COLORS.gold}` },
+    tl: { top: -1, left: -1, borderTop: `6px solid ${COLORS.gold}`, borderLeft: `4px solid ${COLORS.gold}` },
+    tr: { top: -1, right: -1, borderTop: `6px solid ${COLORS.gold}`, borderRight: `4px solid ${COLORS.gold}` },
+    bl: { bottom: -1, left: -1, borderBottom: `6px solid ${COLORS.gold}`, borderLeft: `4px solid ${COLORS.gold}` },
+    br: { bottom: -1, right: -1, borderBottom: `6px solid ${COLORS.gold}`, borderRight: `4px solid ${COLORS.gold}` },
   }
   return <span aria-hidden="true" style={{ position: 'absolute', width: 24, height: 24, zIndex: 5, ...pos[corner] }} />
 }

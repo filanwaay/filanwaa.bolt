@@ -5,18 +5,18 @@ import { AdBanner } from '../components/AdBanner'
 
 const COLORS = {
   deep: '#0B3D2E', deepDark: '#06251C', gold: '#C89B3C',
-  goldLight: '#E8C468', terracotta: '#B5622E', sand: '#F6F1E4',
-  ink: '#12211B', slate: '#4A554E',
+  goldLight: '#E8C468', terracotta: '#B5622E', sand: '#f1dfdf',
+  ink: '#12211B', slate: '#111010',
 }
 
 function CornerMark({ corner }: { corner: 'tl' | 'tr' | 'bl' | 'br' }) {
   const pos: Record<string, React.CSSProperties> = {
-    tl: { top: -1, left: -1, borderTop: `2px solid ${COLORS.gold}`, borderLeft: `2px solid ${COLORS.gold}` },
-    tr: { top: -1, right: -1, borderTop: `2px solid ${COLORS.gold}`, borderRight: `2px solid ${COLORS.gold}` },
-    bl: { bottom: -1, left: -1, borderBottom: `2px solid ${COLORS.gold}`, borderLeft: `2px solid ${COLORS.gold}` },
-    br: { bottom: -1, right: -1, borderBottom: `2px solid ${COLORS.gold}`, borderRight: `2px solid ${COLORS.gold}` },
+    tl: { top: -1, left: -1, borderTop: `6px solid ${COLORS.gold}`, borderLeft: `6px solid ${COLORS.gold}` },
+    tr: { top: -1, right: -1, borderTop: `6px solid ${COLORS.gold}`, borderRight: `6px solid ${COLORS.gold}` },
+    bl: { bottom: -1, left: -1, borderBottom: `6px solid ${COLORS.gold}`, borderLeft: `6px solid ${COLORS.gold}` },
+    br: { bottom: -1, right: -1, borderBottom: `6px solid ${COLORS.gold}`, borderRight: `6px solid ${COLORS.gold}` },
   }
-  return <span aria-hidden="true" style={{ position: 'absolute', width: 24, height: 24, zIndex: 5, ...pos[corner] }} />
+  return <span aria-hidden="true" style={{ position: 'absolute', width: 24, height: 24, zIndex: 15, ...pos[corner] }} />
 }
 
 export function TechnologyPage() {
@@ -24,13 +24,13 @@ export function TechnologyPage() {
   const navigate = useNavigate()
 
   const languages = [
-    { title: 'Python', desc: lang === 'so' ? 'Luqadda ugu fudud ee la bilaabo' : lang === 'ar' ? 'أسهل لغة للبدء بها' : 'The easiest language to start with', icon: '🐍', color: '#3776AB', path: '/python' },
+    { title: 'Python', desc: lang === 'so' ? 'Luqadda ugu fudud ee la bilaabo' : lang === 'ar' ? 'أسهل لغة للبدء بها' : 'The easiest language to start with', icon: '🐍', color: '#ff0022', path: '/python' },
     { title: 'HTML', desc: lang === 'so' ? 'Qaab-dhismeedka websaydhyada' : lang === 'ar' ? 'هيكل المواقع الإلكترونية' : 'The structure of websites', icon: '🌐', color: '#E34F26', path: '/html' },
     { title: 'CSS', desc: lang === 'so' ? 'Naqshadaynta websaydhyada' : lang === 'ar' ? 'تصميم المواقع الإلكترونية' : 'Styling websites', icon: '🎨', color: '#1572B6', path: '/css' },
     { title: 'PHP', desc: lang === 'so' ? 'Backend-ka websaydhyada' : lang === 'ar' ? 'خلفية المواقع الإلكترونية' : 'Website backends', icon: '🐘', color: '#777BB4', path: '/php' },
-    { title: 'R', desc: lang === 'so' ? 'Falanqaynta xogta iyo istaatistigga' : lang === 'ar' ? 'تحليل البيانات والإحصاء' : 'Data analysis and statistics', icon: '📊', color: '#276DC3', path: '/r' },
+    { title: 'R', desc: lang === 'so' ? 'Falanqaynta xogta iyo istaratijigga' : lang === 'ar' ? 'تحليل البيانات والإحصاء' : 'Data analysis and statistics', icon: '📊', color: '#276DC3', path: '/r' },
     { title: 'Java', desc: lang === 'so' ? 'Barnaamij-sameynta Android' : lang === 'ar' ? 'برمجة تطبيقات Android' : 'Android programming', icon: '☕', color: '#ED8B00', path: '/java' },
-    { title: 'C++', desc: lang === 'so' ? 'Barnaamij-sameynta xawaaraga sare' : lang === 'ar' ? 'البرمجة عالية الأداء' : 'High-performance programming', icon: '⚙️', color: '#00599C', path: '/cpp' },
+    { title: 'C++', desc: lang === 'so' ? 'Barnaamij-sameynta xawaaraha sare' : lang === 'ar' ? 'البرمجة عالية الأداء' : 'High-performance programming', icon: '⚙️', color: '#00599C', path: '/cpp' },
     { title: 'SQL', desc: lang === 'so' ? 'Database-yada iyo xogta maareynta' : lang === 'ar' ? 'قواعد البيانات وإدارة البيانات' : 'Databases and data management', icon: '🗄️', color: '#4479A1', path: '/sql' },
   ]
 
